@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Order Tracker</title>
 
-    <script src="https://www.gstatic.com/firebasejs/7.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.0.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -82,48 +82,97 @@
 
     <div>
       <h1 class="intro-text">Order Tracker</h1>
-      <div class="container">
-        <form class="form">
+      <hr />
+      <div class="row">
+        <div class="container border order-input col-7">
+          <form class="form">
+            <div>
+              <label for="">
+                Vendor
+              </label>
+              <input
+                type="text"
+                name=""
+                id="vendor"
+                class="form-control"
+                placeholder="Vendor"
+              />
+            </div>
+            <div>
+              <label for="">
+                Cost
+              </label>
+              <input
+                type="text"
+                name=""
+                id="cost"
+                class="form-control"
+                placeholder="Cost"
+              />
+            </div>
+            <div>
+              <label for="">
+                Date Placed
+              </label>
+              <input
+                type="text"
+                name=""
+                id="date-placed"
+                class="form-control"
+                placeholder="Date Placed"
+              />
+            </div>
+
+            <button type="submit" id="new-order-btn" class="btn btn-primary">
+              Submit
+            </button>
+          </form>
+        </div>
+
+        <div class=" open-order-div col-4">
+          <div class="open-orders"></div>
+          <h3 class="open-text">Open Orders</h3>
           <div>
-            <label for="">
-              Vendor
-            </label>
-            <input type="text" name="" id="vendor" class="form-control" placeholder="Vendor" />
+            <table class="table table-sm table-hover" id='open-orders'>
+              <thead>
+                  <tr>
+                      <th scope="col">Vendor</th>
+                      <th scope="col">Amount</th>
+                      <th scope="col">Date</th>
+                      <th scope="col"></th>
+                      <!-- <th scope="col">Frequency</th>
+                      <th scope="col">Next train</th>
+                      <th scope="col">Minutes</th> -->
+
+                  </tr>
+              </thead>
+              <tbody>
+              </tbody>
+          </table>
+          <table>
+            <thead>
+              
+            </thead>
+          </table>
           </div>
-          <div>
-            <label for="">
-              Cost
-            </label>
-            <input type="text" name="" id="cost" class="form-control" placeholder="Cost" />
-          </div>
-          <div>
-            <label for="">
-              Date Placed
-            </label>
-            <input type="text" name="" id="date-placed" class="form-control" placeholder="Date Placed" />
-          </div>
-          
-          <button type="submit" id="new-order-btn" class="btn btn-primary">Submit</button>
-        </form>
+        </div>
       </div>
     </div>
-
-  
-  </body> 
-   <script src="./javascript/app.js"></script>
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-      crossorigin="anonymous"
-    ></script>
+  </body>
+  <script src="./javascript/app.js"></script>
+  <script
+    src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"
+  ></script>
 </html>

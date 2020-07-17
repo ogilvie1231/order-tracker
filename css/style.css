@@ -1,6 +1,6 @@
 .form {
     margin-bottom: 1%;
-    max-width: 22%;
+    /* max-width: 22%; */
 }
 
 .intro-text {
@@ -15,3 +15,32 @@
     margin-bottom: 1%;
 
 }
+
+.order-input {
+    background-color: aliceblue;
+    
+}
+
+hr {
+    max-width: 90%;
+}
+
+.open-orders {
+    border-left: 1px solid black;
+    height: 1000px;
+    position: absolute;
+    /* left: -30%; */
+    /* margin-left: -3px; */
+    top: 0;
+}
+
+.open-text {
+    text-align: center;
+}
+
+table {
+    margin: 6%
+}
+
+
+
