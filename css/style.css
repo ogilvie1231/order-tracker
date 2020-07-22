@@ -1,48 +1,58 @@
 .form {
-    margin-bottom: 1%;
-    /* max-width: 22%; */
+  margin-bottom: 1%;
+  /* max-width: 22%; */
 }
 
 .intro-text {
-    text-align: center;
+  text-align: center;
 }
 
 .btn {
-    margin-top: 1%;
+  margin-top: 1%;
 }
 
 .form-control {
-    margin-bottom: 1%;
-
+  margin-bottom: 1%;
 }
 
 .order-input {
-    background-color: aliceblue;
-    
+  background-color: aliceblue;
 }
 
 hr {
-    max-width: 90%;
+  max-width: 90%;
 }
 
 .open-orders {
-    border-left: 1px solid black;
-    height: 1000px;
-    position: absolute;
-    /* left: -30%; */
-    /* margin-left: -3px; */
-    top: 0;
+  border-left: 1px solid black;
+  height: 1000px;
+  position: absolute;
+  /* left: -30%; */
+  /* margin-left: -3px; */
+  top: 0;
 }
 
 .open-text {
-    text-align: center;
+  text-align: center;
 }
 
 table {
-    margin: 6%
+  margin: 6%;
 }
 
 #totalCostDisp {
-    padding-left: 10%;
+  padding-left: 10%;
+}
+
+.glyphicon-calendar {
+  font-size: 15pt;
+}
+.input-group {
+  width: 180px;
+  margin-top: 30px;
+}
+
+#new-order-btn {
+    float: right;
 }
 

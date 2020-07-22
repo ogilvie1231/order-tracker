@@ -13,17 +13,19 @@ firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
 //   firebase.analytics();
 
+
 $("#new-order-btn").on("click", function (event) {
   let vendor = $("#vendor").val().trim();
-  //   if ($("#cost").val().trim() === )
   let cost = $("#cost").val().trim();
-  let date = $("#date-placed").val().trim();
+  let date = $("#datepicker").val().trim();
 
   event.preventDefault();
   if (vendor === "") {
-    alert("please enter the Vendor");
-  } else if (isNaN(cost)) {
-    alert("Cost must be a number");
+    alert("please enter the vendor");
+  } else if (cost === "")  {
+    alert("Please enter the cost");
+  } else if (isNaN(cost)){
+    alert('Cost must be a number')
   } else if (date === "") {
     alert("Please enter a date");
   } else {
@@ -41,17 +43,33 @@ $("#new-order-btn").on("click", function (event) {
     // window.location.reload();
     $("#vendor").val("");
     $("#cost").val("");
-    $("#date-placed").val("");
+    $("#datepicker").val("");
   }
 });
 
-$(document).ready(function() {
+
+
+$( function() {
+    $( "#datepicker" ).datepicker().attr("autocomplete", "off");
+    $( "#anim" ).on( "change", function() {
+      $( "#datepicker" ).datepicker( "option", "showAnim", $( this ).val() );
+    });
+  } );
+
+window.onload = function() {
     $("#delete-btn").on("click", function () {
         // event.preventDefault();
         console.log("delete-btn was pressed");
         alert("Way to go!");
       });
-})
+  };
+// $(document).ready(function() {
+//     $("#delete-btn").on("click", function () {
+//         // event.preventDefault();
+//         console.log("delete-btn was pressed");
+//         alert("Way to go!");
+//       });
+// })
 
 let totalCost = [];
 
@@ -72,10 +90,10 @@ let totalCostFun = () => {
 
 let retreive = (cb) => {
   database.ref().on("child_added", function (childSnapshot) {
-    //   console.log('childSnapshot: ', childSnapshot);
+      console.log('childSnapshot.val: ', childSnapshot.val());
 
     orderArr.push(childSnapshot.val());
-    //   console.log("orderArr: ", orderArr);
+      console.log("orderArr: ", orderArr);
 
     let vendor = childSnapshot.val().vendor;
     let cost = childSnapshot.val().cost;
@@ -85,10 +103,16 @@ let retreive = (cb) => {
     
     addCost(totalCost)
 
+    let orderAge = moment("20200628", "MM/DD/YYYY").fromNow()
+    // let orderAge = moment().diff(orderDate)
+    console.log('orderAge: ', orderAge)
+
     let newOrderInfo = $("<tr>").append(
       $("<td>").text(vendor),
       $("<td>").text(cost),
       $("<td>").text(orderDate),
+      $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
+    //   console.log('orderDate:', orderDate),
       $(
         '<button key="' +
           orderDate +
@@ -104,4 +128,11 @@ let retreive = (cb) => {
 
 retreive(totalCostFun());
 
-// console.log('totalCost: ', totalCost)
+let counterFunc = () => {
+    let days = 0
+    setInterval(function () {
+        // days++;
+        // console.log('days: ', days)
+        $("#timeCount").html(days++)
+    }, 1000)
+}
