@@ -13,7 +13,6 @@ firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
 //   firebase.analytics();
 
-
 $("#new-order-btn").on("click", function (event) {
   let vendor = $("#vendor").val().trim();
   let cost = $("#cost").val().trim();
@@ -22,10 +21,10 @@ $("#new-order-btn").on("click", function (event) {
   event.preventDefault();
   if (vendor === "") {
     alert("please enter the vendor");
-  } else if (cost === "")  {
+  } else if (cost === "") {
     alert("Please enter the cost");
-  } else if (isNaN(cost)){
-    alert('Cost must be a number')
+  } else if (isNaN(cost)) {
+    alert("Cost must be a number");
   } else if (date === "") {
     alert("Please enter a date");
   } else {
@@ -37,7 +36,7 @@ $("#new-order-btn").on("click", function (event) {
       date,
       complete: false,
     };
-  
+
     database.ref().push(newOrder);
 
     // window.location.reload();
@@ -47,92 +46,105 @@ $("#new-order-btn").on("click", function (event) {
   }
 });
 
-
-
-$( function() {
-    $( "#datepicker" ).datepicker().attr("autocomplete", "off");
-    $( "#anim" ).on( "change", function() {
-      $( "#datepicker" ).datepicker( "option", "showAnim", $( this ).val() );
-    });
-  } );
-
-window.onload = function() {
-    $("#delete-btn").on("click", function () {
-        // event.preventDefault();
-        console.log("delete-btn was pressed");
-        alert("Way to go!");
-      });
-  };
-// $(document).ready(function() {
-//     $("#delete-btn").on("click", function () {
-//         // event.preventDefault();
-//         console.log("delete-btn was pressed");
-//         alert("Way to go!");
-//       });
-// })
+// Date Picker
+$(function () {
+  $("#datepicker").datepicker().attr("autocomplete", "off");
+  $("#anim").on("change", function () {
+    $("#datepicker").datepicker("option", "showAnim", $(this).val());
+  });
+});
 
 let totalCost = [];
 
 let orderArr = [];
 
 let addCost = (array) => {
-let sum = 0;
-for (let i = 0; i < array.length; i++) {
+  let sum = 0;
+  for (let i = 0; i < array.length; i++) {
     sum += array[i];
-}
-console.log('addCost sum: ', sum)
-$('#totalCostDisp').text("$" + sum)
+  }
+  console.log("addCost sum: ", sum);
+  $("#totalCostDisp").text("$" + sum);
 };
 
 let totalCostFun = () => {
   console.log("totalCost: ", totalCost);
 };
 
+let deleteBtn = (id) => {
+  $("#" + id).on("click", function () {
+    // event.preventDefault();
+    console.log("delete-btn was pressed");
+    alert("Way to go!");
+  });
+};
+
 let retreive = (cb) => {
   database.ref().on("child_added", function (childSnapshot) {
-      console.log('childSnapshot.val: ', childSnapshot.val());
+    console.log("childSnapshot.val: ", childSnapshot.val());
 
     orderArr.push(childSnapshot.val());
-      console.log("orderArr: ", orderArr);
+    console.log("orderArr: ", orderArr);
 
     let vendor = childSnapshot.val().vendor;
     let cost = childSnapshot.val().cost;
     let orderDate = childSnapshot.val().date;
     totalCost.push(parseInt(cost));
     // console.log('retreive "Cost:" ',typeof parseInt(cost))
-    
-    addCost(totalCost)
 
-    let orderAge = moment("20200628", "MM/DD/YYYY").fromNow()
+    addCost(totalCost);
+
+    let orderAge = moment("20200628", "MM/DD/YYYY").fromNow();
     // let orderAge = moment().diff(orderDate)
-    console.log('orderAge: ', orderAge)
+    console.log("orderAge: ", orderAge);
+    let dynamicId = "";
+    console.log("dynamicId: ", dynamicId);
+
+    let newId = 0;
+    let newIdArr = orderDate.split("/");
+    for (let i = 0; i < newIdArr.length; i++) {
+      const elem = newIdArr[i];
+      newId += elem;
+    }
+    let finalId = newId + vendor;
+    // let dynamicId = finalId
+    console.log('finalId: ', finalId)
 
     let newOrderInfo = $("<tr>").append(
       $("<td>").text(vendor),
       $("<td>").text(cost),
       $("<td>").text(orderDate),
       $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
-    //   console.log('orderDate:', orderDate),
+      //   console.log('orderDate:', orderDate),
       $(
         '<button key="' +
           orderDate +
-          '" id="delete-btn" class="btn btn-primary">'
+          '" id="' +
+          finalId +
+          '" class="btn btn-primary delete-btn">'
       ).text("delete")
     );
     // console.log("newOrderInfo:", newOrderInfo);
     $("#open-orders > tbody").append(newOrderInfo);
     // addCost(totalCost);
     cb;
+
+    $("#" + finalId + "").on("click", function () {
+      // event.preventDefault();
+      console.log("delete-btn was pressed");
+      alert("Way to go! finalId: " + finalId +" was pressed");
+    });
   });
+  // deleteBtn(orderDate)
 };
 
-retreive(totalCostFun());
+retreive(deleteBtn());
 
 let counterFunc = () => {
-    let days = 0
-    setInterval(function () {
-        // days++;
-        // console.log('days: ', days)
-        $("#timeCount").html(days++)
-    }, 1000)
-}
+  let days = 0;
+  setInterval(function () {
+    // days++;
+    // console.log('days: ', days)
+    $("#timeCount").html(days++);
+  }, 1000);
+};
