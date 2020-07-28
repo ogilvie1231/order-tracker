@@ -151,7 +151,7 @@ let retreive = () => {
             '" id="' +
             itemKey +
             '" class="btn btn-primary delete-btn">'
-        ).text("delete")
+        ).text("Open")
       );
       $("#closed-orders > tbody").append(closedOrderInfo);
 
