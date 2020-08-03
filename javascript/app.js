@@ -11,6 +11,7 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
+// var defaultAuth = firebase.auth();
 
 let totalCost = [];
 let orderArr = [];
