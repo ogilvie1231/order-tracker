@@ -16,6 +16,9 @@ var database = firebase.database();
 let totalCost = [];
 let orderArr = [];
 let taxableArr = [];
+let taxBatch = 0;
+
+$("#updateDiv").hide();
 
 $("#new-order-btn").on("click", function (event) {
   let vendor = $("#vendor").val().trim();
@@ -33,12 +36,11 @@ $("#new-order-btn").on("click", function (event) {
   } else if (date === "") {
     alert("Please enter a date");
   } else {
-
     let newOrder = {
       vendor,
       cost,
       date,
-      complete: false,
+      complete: "open",
       tax,
     };
 
@@ -53,6 +55,14 @@ $(function () {
   $("#datepicker").datepicker().attr("autocomplete", "off");
   $("#anim").on("change", function () {
     $("#datepicker").datepicker("option", "showAnim", $(this).val());
+  });
+});
+
+// Date Picker for updates
+$(function () {
+  $("#eDatepicker").datepicker().attr("autocomplete", "off");
+  $("#anim").on("change", function () {
+    $("#eDatepicker").datepicker("option", "showAnim", $(this).val());
   });
 });
 
@@ -72,30 +82,101 @@ let calcTax = (array) => {
   }
   let taxAmount = (sum * taxPer).toFixed(2);
   $("#totalTaxDisp").text("$" + taxAmount);
+  taxBatch = taxAmount;
+};
+
+let updateBtn = (id, newVendor, newCost, newOrderDate, newTaxStat) => {
+  $("#updateBtn").on("click", function (event) {
+    // event.preventDefault();
+    console.log("id: ", id);
+    let updatedInfo = {
+      vendor: newVendor,
+      cost: newCost,
+      date: newOrderDate,
+      complete: "open",
+      tax: newTaxStat,
+    }
+    database.ref(id).update({updatedInfo});
+    // database.ref(id).update({
+    //   newVendor,
+    //   newCost,
+    //   newOrderDate,
+    //   complete: "open",
+    //   newTaxStat,
+    // });
+  });
+};
+
+let editBtn = (id, curVendor, curCost, curOrderDate, curTaxStat) => {
+  $("#" + id + "e" + "").on("click", function () {
+    $("#updateDiv").show();
+    $("#eVendor").val(curVendor);
+    $("#eCost").val(curCost);
+    $("#eDatepicker").val(curOrderDate);
+    $("#eTaxOption").val(curTaxStat);
+    let vendor = $("#eVendor").val().trim();
+    let cost = $("#eCost").val().trim();
+    let date = $("#eDatepicker").val().trim();
+    let tax = $("#eTaxOption").val().trim();
+    console.log('cost: ', cost)
+    // Update Order
+    updateBtn(id, vendor, cost, date, tax);
+  });
 };
 
 let completeBtn = (id) => {
   $("#" + id + "").on("click", function () {
     database.ref(id).update({
-      complete: true,
+      complete: "complete",
     });
-    window.location.reload();
-  });
-};
-
-let removeBtn = (id) => {
-  $("#" + id + "").on("click", function () {
-    database.ref(id).remove()
     window.location.reload();
   });
 };
 
 let deleteBtn = (id) => {
+  $("#" + id + "d" + "").on("click", function () {
+    database.ref(id).remove();
+    window.location.reload();
+  });
+};
+
+let openBtn = (id) => {
   $("#" + id + "").on("click", function () {
     database.ref(id).update({
-      complete: false,
+      complete: "open",
     });
     window.location.reload();
+  });
+};
+
+let closeBtn = (id) => {
+  $("#" + id + "f" + "").on("click", function () {
+    database.ref(id).update({
+      complete: "closed",
+    });
+    window.location.reload();
+  });
+};
+
+let batchOut = (array) => {
+  let sum = 0;
+  let taxPer = 0.56;
+  for (let i = 0; i < array.length; i++) {
+    sum += array[i];
+  }
+  let taxAmount = (sum * taxPer).toFixed(2);
+  $("#totalTaxDisp").text("$" + taxAmount);
+
+  $("#batchBtn").on("click", function (event) {
+    event.preventDefault();
+
+    // let newBatch = {
+    //   batchInfo: true,
+    //   date: moment().format('LLLL'),
+    //   totalTax: taxBatchProp
+    // };
+    console.log("batchout taxAmount: ", taxAmount);
+    // database.ref().push(newBatch)
   });
 };
 
@@ -109,23 +190,26 @@ let retreive = () => {
     let itemKey = childSnapshot.key;
     let taxStat = childSnapshot.val().tax;
 
-    if (childSnapshot.val().complete === false) {
+    if (childSnapshot.val().complete === "complete") {
       totalCost.push(parseInt(cost));
-      }
-   
+    }
+
     addCost(totalCost);
 
-    if (childSnapshot.val().tax === "Taxable" && childSnapshot.val().complete === false) {
+    if (
+      (childSnapshot.val().tax === "Taxable" &&
+        childSnapshot.val().complete === "open") ||
+      (childSnapshot.val().tax === "Taxable" &&
+        childSnapshot.val().complete === "complete")
+    ) {
       taxableArr.push(parseInt(cost));
     }
-   
-    if (childSnapshot.val().complete == false) {
-
+    if (childSnapshot.val().complete == "open") {
       let newOrderInfo = $("<tr>").append(
         $("<td>").text(vendor),
         $("<td>").text("$" + cost),
         $("<td>").text(orderDate),
-        $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow('d')),
+        $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow("d")),
         $("<td>").text(taxStat),
         $(
           '<button key="' +
@@ -133,13 +217,21 @@ let retreive = () => {
             '" id="' +
             itemKey +
             '" class="btn btn-primary delete-btn">'
-        ).text("Complete")
+        ).text("Complete"),
+        $(
+          '<button key="' +
+            itemKey +
+            '" id="' +
+            itemKey +
+            "e" +
+            '" class="btn btn-primary delete-btn">'
+        ).text("edit")
       );
 
       $("#open-orders > tbody").append(newOrderInfo);
-
       completeBtn(itemKey);
-    } else if (childSnapshot.val().complete == true) {
+      editBtn(itemKey, vendor, cost, orderDate, taxStat);
+    } else if (childSnapshot.val().complete == "complete") {
       let closedOrderInfo = $("<tr>").append(
         $("<td>").text(vendor),
         $("<td>").text("$" + cost),
@@ -152,15 +244,53 @@ let retreive = () => {
             '" id="' +
             itemKey +
             '" class="btn btn-primary delete-btn">'
-        ).text("Open")
+        ).text("Open"),
+        $(
+          '<button key="' +
+            orderDate +
+            '" id="' +
+            itemKey +
+            "f" +
+            '" class="btn btn-primary delete-btn">'
+        ).text("Close")
+      );
+      $("#complete-orders > tbody").append(closedOrderInfo);
+      openBtn(itemKey);
+      closeBtn(itemKey);
+    } else if (childSnapshot.val().complete == "closed") {
+      let closedOrderInfo = $("<tr>").append(
+        $("<td>").text(vendor),
+        $("<td>").text("$" + cost),
+        $("<td>").text(orderDate),
+        $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
+        $("<td>").text(taxStat),
+        $(
+          '<button key="' +
+            orderDate +
+            '" id="' +
+            itemKey +
+            '" class="btn btn-primary delete-btn">'
+        ).text("Open"),
+        $(
+          '<button key="' +
+            orderDate +
+            '" id="' +
+            itemKey +
+            "d" +
+            '" class="btn btn-primary delete-btn">'
+        ).text("Delete")
       );
       $("#closed-orders > tbody").append(closedOrderInfo);
 
+      closeBtn(itemKey);
       deleteBtn(itemKey);
     }
     calcTax(taxableArr);
+
+    if (taxableArr > 0) {
+      batchOut(taxableArr);
+    }
   });
 };
 
 retreive();
-
