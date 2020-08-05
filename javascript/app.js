@@ -85,25 +85,22 @@ let calcTax = (array) => {
   taxBatch = taxAmount;
 };
 
-let updateBtn = (id, newVendor, newCost, newOrderDate, newTaxStat) => {
+let updateBtn = (id) => {
   $("#updateBtn").on("click", function (event) {
     // event.preventDefault();
-    console.log("id: ", id);
-    let updatedInfo = {
-      vendor: newVendor,
-      cost: newCost,
-      date: newOrderDate,
+   
+    let vendor = $("#eVendor").val().trim();
+    let cost = $("#eCost").val().trim();
+    let date = $("#eDatepicker").val().trim();
+    let tax = $("#eTaxOption").val().trim();
+    
+    database.ref(id).update({
+      vendor,
+      cost,
+      date,
       complete: "open",
-      tax: newTaxStat,
-    }
-    database.ref(id).update({updatedInfo});
-    // database.ref(id).update({
-    //   newVendor,
-    //   newCost,
-    //   newOrderDate,
-    //   complete: "open",
-    //   newTaxStat,
-    // });
+      tax,
+    });
   });
 };
 
@@ -114,13 +111,12 @@ let editBtn = (id, curVendor, curCost, curOrderDate, curTaxStat) => {
     $("#eCost").val(curCost);
     $("#eDatepicker").val(curOrderDate);
     $("#eTaxOption").val(curTaxStat);
-    let vendor = $("#eVendor").val().trim();
-    let cost = $("#eCost").val().trim();
-    let date = $("#eDatepicker").val().trim();
-    let tax = $("#eTaxOption").val().trim();
-    console.log('cost: ', cost)
+    // let vendor = $("#eVendor").val().trim();
+    // let cost = $("#eCost").val().trim();
+    // let date = $("#eDatepicker").val().trim();
+    // let tax = $("#eTaxOption").val().trim();
     // Update Order
-    updateBtn(id, vendor, cost, date, tax);
+    updateBtn(id);
   });
 };
 
