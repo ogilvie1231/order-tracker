@@ -5,6 +5,8 @@
 
 .intro-text {
   text-align: center;
+  background-color: rgb(233, 233, 233);
+  padding: 1%;
 }
 
 .btn {
@@ -24,11 +26,11 @@ hr {
 }
 
 .open-orders {
-  border-left: 1px solid black;
+  border-left: 1px solid rgb(197, 197, 197);
   height: 1000px;
   position: absolute;
-  /* left: -30%; */
-  /* margin-left: -3px; */
+  left: -15%;
+  margin-left: -3px;
   top: 0;
 }
 
@@ -38,6 +40,7 @@ hr {
 
 table {
   margin: 6%;
+  
 }
 
 /* #totalCostDisp {
@@ -60,3 +63,12 @@ table {
   height: 380px;
 }
 
+.header {
+  color: rgb(189, 189, 189);
+}
+
+@media screen and (max-width: 900px){
+  .infoDisp {
+    width: 95%;
+  }
+}
