@@ -72,3 +72,39 @@ table {
     width: 95%;
   }
 }
+
+@media only screen and  (max-width: 760px) {
+
+td, tr, th { display: block;
+max-width: 95%;
+}
+
+/* Hide table headers (but not display: none;, for accessibility) */
+
+thead tr {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
+
+
+
+tr + tr { margin-top: 1.5em; }
+/* make like a "row" */
+td {
+  border: none;
+  border-bottom: 1px solid #eee;
+  position: relative;
+  padding-left: 50%;
+  text-align: left;
+}
+
+td:before {
+  content: attr(data-label);
+  display: inline-block;
+  line-height: 1.5;
+  margin-left: -100%;
+  width: 100%;
+  white-space: nowrap;
+}
+}
