@@ -111,11 +111,6 @@ let editBtn = (id, curVendor, curCost, curOrderDate, curTaxStat) => {
     $("#eCost").val(curCost);
     $("#eDatepicker").val(curOrderDate);
     $("#eTaxOption").val(curTaxStat);
-    // let vendor = $("#eVendor").val().trim();
-    // let cost = $("#eCost").val().trim();
-    // let date = $("#eDatepicker").val().trim();
-    // let tax = $("#eTaxOption").val().trim();
-    // Update Order
     updateBtn(id);
   });
 };
@@ -278,7 +273,7 @@ let retreive = () => {
       );
       $("#closed-orders > tbody").append(closedOrderInfo);
 
-      closeBtn(itemKey);
+      completeBtn(itemKey);
       deleteBtn(itemKey);
     }
     calcTax(taxableArr);
