@@ -98,7 +98,7 @@
  
 
     <div>
-      <header><h1 class="intro-text">Order Tracker</h1></header>
+<h1 class="intro-text">Order Tracker</h1>
    
       <div class="row">
         <div class="open-order-div col-lg-8 col-md-10 col-sm-5">
@@ -156,7 +156,7 @@
           <!-- <p><button id="batchBtn">Batch Out</button></p> -->
         
           <h3 class="open-text">Open Orders</h3>
-          
+          <hr />
           <div>
             <table class="table table-sm table-hover" id='open-orders'>
               <thead>
@@ -183,9 +183,9 @@
               <thead>
                 <tr>
                   <hr />
-                  <th scope="col">Total Cost: <th id="totalCostDisp"></th></th>
-                  <th><th></th></th>
-                  <th scope="col">Total Tax: <th id="totalTaxDisp"></th></th>
+                  <h5 class="totalDisp" scope="col">Total Cost: <h5 class="totalDisp" id="totalCostDisp"></h5></h5>
+                  <h5><h5></h5></h5>
+                  <h5 class="totalDisp" scope="col">Total Tax: <h5 class="totalDisp" id="totalTaxDisp"></h5></h5>
                 </tr>
               </thead>
             </table>
@@ -255,6 +255,7 @@
                 Vendor
               </label>
               <input
+              data-label="vendor"
                 type="text"
                 name=""
                 id="vendor"

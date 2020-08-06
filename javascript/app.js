@@ -181,7 +181,7 @@ let retreive = () => {
     let itemKey = childSnapshot.key;
     let taxStat = childSnapshot.val().tax;
 
-    if (childSnapshot.val().complete === "complete") {
+    if (childSnapshot.val().complete === "open") {
       totalCost.push(parseInt(cost));
     }
 
