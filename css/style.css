@@ -76,6 +76,10 @@ table {
 
 @media only screen and  (max-width: 760px) {
 
+  table {
+    max-width: 95%;
+  }
+
   .open-orders {
     border-left: 0px solid rgb(197, 197, 197);
     height: 1000px;
@@ -126,5 +130,11 @@ margin-left: 4%;
   display: block;
   margin: auto;
   max-width: 90%;
+}
+
+.infoDisp {
+  display: block;
+  max-width: 85%;
+  margin: auto;
 }
 }
