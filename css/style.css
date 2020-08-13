@@ -11,13 +11,20 @@
   padding: 1%;
 
 }
-
+button {
+  margin-right: 2%;
+}
 .btn {
   margin-top: 1%;
 }
 
 .form-control {
   margin-bottom: 1%;
+}
+
+.totalDisp {
+
+  margin-left: 5%;
 }
 
 .order-input {
@@ -99,8 +106,6 @@ thead tr {
   top: -9999px;
   left: -9999px; */
 }
-
-/* tr + tr { margin-top: 1.5em; } */
 
 td {
   border-bottom: 1px solid #eee;
