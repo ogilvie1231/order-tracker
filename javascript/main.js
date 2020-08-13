@@ -1,5 +1,8 @@
 (function () {
-    let redirect = "file:///Users/alexogilvie/Desktop/order-tracker/login.html"
+  let redirectLocal =
+    "file:///Users/alexogilvie/Desktop/order-tracker/index.html";
+  let redirectNetwork = "file:///Volumes/order-tracker/index.html";
+  let redirectlive = "https://ogilvie1231.github.io/order-tracker/index.html";
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       // User is signed in.
@@ -10,19 +13,23 @@
       var isAnonymous = user.isAnonymous;
       var uid = user.uid;
       var providerData = user.providerData;
-      var token = user.token;
-      console.log('user: ', user)
+      //   var token = auth;
+      console.log("uid: ", uid, "\n", "token: ");
       $("#login").hide();
       console.log("user: ", displayName);
-    } else if (window.location.href !== redirect) {
-      
-      
-    //   window.location="Login.html";
+    } else if (
+      window.location.href === redirectLocal ||
+      window.location.href === redirectNetwork ||
+      window.location.href === redirectlive
+    ) {
       console.log("user: ", displayName);
       window.location.replace("login.html");
-    } else {
-
-        $("#login").hide();
+    }
+    //  else if (window.location.href !== redirectNetwork ) {
+    //   window.location.replace("login.html");
+    // }
+    else {
+      $("#login").hide();
     }
   });
 })();
