@@ -71,7 +71,13 @@ let addCost = (array) => {
   for (let i = 0; i < array.length; i++) {
     sum += array[i];
   }
-  $("#totalCostDisp").text("$" + sum);
+  let formatSum = sum.toLocaleString(
+    undefined, // leave undefined to use the browser's locale,
+    // or use a string like 'en-US' to override it.
+    { minimumFractionDigits: 2 }
+  );
+  
+  $("#totalCostDisp").text("$" + formatSum);
 };
 
 let calcTax = (array) => {
@@ -80,20 +86,25 @@ let calcTax = (array) => {
   for (let i = 0; i < array.length; i++) {
     sum += array[i];
   }
-  let taxAmount = (sum * taxPer).toFixed(2);
-  $("#totalTaxDisp").text("$" + taxAmount);
+  let taxAmount = (sum * taxPer);
+  let formatTax = taxAmount.toLocaleString(
+    undefined, 
+    { minimumFractionDigits: 2 }
+  );
+  console.log('formatTax: ', formatTax)
+  $("#totalTaxDisp").text("$" + formatTax);
   taxBatch = taxAmount;
 };
 
 let updateBtn = (id) => {
   $("#updateBtn").on("click", function (event) {
     // event.preventDefault();
-   
+
     let vendor = $("#eVendor").val().trim();
     let cost = $("#eCost").val().trim();
     let date = $("#eDatepicker").val().trim();
     let tax = $("#eTaxOption").val().trim();
-    
+
     database.ref(id).update({
       vendor,
       cost,

@@ -13,8 +13,8 @@
       var isAnonymous = user.isAnonymous;
       var uid = user.uid;
       var providerData = user.providerData;
-      //   var token = auth;
-      console.log("uid: ", uid, "\n", "token: ");
+    //   var token = auth.uid;
+      console.log("user: ", user);
       $("#login").hide();
       console.log("user: ", displayName);
     } else if (
