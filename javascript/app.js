@@ -1,17 +1,5 @@
-// var firebaseConfig = {
-//   apiKey: "AIzaSyBr3yOu5VDq0OIQz1_hHK_xfwBCYB243q8",
-//   authDomain: "order-tracker-a1c7e.firebaseapp.com",
-//   databaseURL: "https://order-tracker-a1c7e.firebaseio.com",
-//   projectId: "order-tracker-a1c7e",
-//   storageBucket: "order-tracker-a1c7e.appspot.com",
-//   messagingSenderId: "886530519607",
-//   appId: "1:886530519607:web:7a4456301e2de1934085b2",
-//   measurementId: "G-5GDXKM29FR",
-// };
-// // Initialize Firebase
-// firebase.initializeApp(firebaseConfig);
+
 var database = firebase.database();
-// var defaultAuth = firebase.auth();
 
 let totalCost = [];
 let orderArr = [];
@@ -72,8 +60,7 @@ let addCost = (array) => {
     sum += array[i];
   }
   let formatSum = sum.toLocaleString(
-    undefined, // leave undefined to use the browser's locale,
-    // or use a string like 'en-US' to override it.
+    undefined, 
     { minimumFractionDigits: 2 }
   );
   
@@ -98,8 +85,7 @@ let calcTax = (array) => {
 
 let updateBtn = (id) => {
   $("#updateBtn").on("click", function (event) {
-    // event.preventDefault();
-
+   
     let vendor = $("#eVendor").val().trim();
     let cost = $("#eCost").val().trim();
     let date = $("#eDatepicker").val().trim();
@@ -171,14 +157,6 @@ let batchOut = (array) => {
 
   $("#batchBtn").on("click", function (event) {
     event.preventDefault();
-
-    // let newBatch = {
-    //   batchInfo: true,
-    //   date: moment().format('LLLL'),
-    //   totalTax: taxBatchProp
-    // };
-    console.log("batchout taxAmount: ", taxAmount);
-    // database.ref().push(newBatch)
   });
 };
 

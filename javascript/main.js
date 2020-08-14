@@ -3,31 +3,18 @@
     "file:///Users/alexogilvie/Desktop/order-tracker/index.html";
   let redirectNetwork = "file:///Volumes/order-tracker/index.html";
   let redirectlive = "https://ogilvie1231.github.io/order-tracker/index.html";
+  let redirectLiveSimple = "https://ogilvie1231.github.io/order-tracker/"
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
-      // User is signed in.
-      var displayName = user.displayName;
-      var email = user.email;
-      var emailVerified = user.emailVerified;
-      var photoURL = user.photoURL;
-      var isAnonymous = user.isAnonymous;
-      var uid = user.uid;
-      var providerData = user.providerData;
-    //   var token = auth.uid;
-      console.log("user: ", user);
       $("#login").hide();
-      console.log("user: ", displayName);
     } else if (
       window.location.href === redirectLocal ||
       window.location.href === redirectNetwork ||
-      window.location.href === redirectlive
+      window.location.href === redirectlive ||
+      window.location.href === redirectLiveSimple
     ) {
-      console.log("user: ", displayName);
       window.location.replace("login.html");
     }
-    //  else if (window.location.href !== redirectNetwork ) {
-    //   window.location.replace("login.html");
-    // }
     else {
       $("#login").hide();
     }
