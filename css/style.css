@@ -4,7 +4,9 @@
   padding: 3%;
   text-align: center;
 }
-
+#user{
+margin-left: auto;
+}
 .signIn {
   text-align: center;
   margin: auto;

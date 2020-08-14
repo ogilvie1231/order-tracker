@@ -7,6 +7,8 @@
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       $("#login").hide();
+      $("#user").append("Welcome ", user.displayName)
+      console.log('user: ', user.displayName)
     } else if (
       window.location.href === redirectLocal ||
       window.location.href === redirectNetwork ||
@@ -17,6 +19,7 @@
     }
     else {
       $("#login").hide();
+
     }
   });
 })();
