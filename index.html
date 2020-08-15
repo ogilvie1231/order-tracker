@@ -56,7 +56,7 @@
       <a class="navbar-brand" id="logout" href="./login.html">Logout</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       </button>
-      <h5 id="user"></h5>
+      <p id="user"></p>
       </div>
     </nav>
 
@@ -254,7 +254,19 @@
                 <option>Taxable</option>
               </select>
             </div>
-
+            <div>
+              <label for="file">
+                File
+              </label>
+              <input
+                data-label="vendor"
+                type="file"
+                name=""
+                id="vendor"
+                class="form-control"
+                placeholder="Vendor"
+              />
+            </div>
             <button type="submit" id="new-order-btn" class="btn btn-primary">
               Submit
             </button>
