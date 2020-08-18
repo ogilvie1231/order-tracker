@@ -273,12 +273,21 @@ let retreive = () => {
             itemKey +
             "e" +
             '" class="btn btn-primary delete-btn">Edit</button>'
+        ),
+        $("<td>").html(
+          '<button key="' +
+            orderDate +
+            '" id="' +
+            itemKey +
+            "d" +
+            '" class="btn btn-primary delete-btn">Delete</button>'
         )
       );
 
       $("#open-orders > tbody").append(newOrderInfo);
       completeBtn(itemKey);
       editBtn(itemKey, vendor, cost, orderDate, taxStat);
+      deleteBtn(itemKey);
     } else if (childSnapshot.val().complete == "complete") {
       let closedOrderInfo = $("<tr>").append(
         $("<td>").text(vendor),
@@ -303,11 +312,20 @@ let retreive = () => {
             itemKey +
             "f" +
             '" class="btn btn-primary delete-btn">Close</button>'
+        ),
+        $("<td>").html(
+          '<button key="' +
+            orderDate +
+            '" id="' +
+            itemKey +
+            "d" +
+            '" class="btn btn-primary delete-btn">Delete</button>'
         )
       );
       $("#complete-orders > tbody").append(closedOrderInfo);
       openBtn(itemKey);
       closeBtn(itemKey);
+      deleteBtn(itemKey);
     } else if (childSnapshot.val().complete == "closed") {
       let closedOrderInfo = $("<tr>").append(
         $("<td>").text(vendor),

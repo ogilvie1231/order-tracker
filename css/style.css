@@ -42,8 +42,9 @@ button {
   max-width: 90%; */
 }
 
-hr {
-  max-width: 90%;
+hr, .open-text {
+  /* max-width: 90%; */
+  margin-left: 10%;
 }
 
 .open-orders {
