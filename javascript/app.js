@@ -1,20 +1,27 @@
-
 var database = firebase.database();
 
 let totalCost = [];
 let orderArr = [];
 let taxableArr = [];
 let taxBatch = 0;
+let fileUpload = {};
+let orderUpload = {};
+let url = '';
 
 $("#updateDiv").hide();
 
 $("#new-order-btn").on("click", function (event) {
+  event.preventDefault();
   let vendor = $("#vendor").val().trim();
   let cost = $("#cost").val().trim();
   let date = $("#datepicker").val().trim();
   let tax = $("#taxOption").val().trim();
+  
+  var metadata = {
+    contentType: "image/jpeg",
+    name: vendor,
+  };
 
-  event.preventDefault();
   if (vendor === "") {
     alert("please enter the vendor");
   } else if (cost === "") {
@@ -30,11 +37,12 @@ $("#new-order-btn").on("click", function (event) {
       date,
       complete: "open",
       tax,
+      url,
     };
-
+console.log('newOrder:', newOrder)
     database.ref().push(newOrder);
 
-    window.location.reload();
+    // window.location.reload();
   }
 });
 
@@ -59,11 +67,8 @@ let addCost = (array) => {
   for (let i = 0; i < array.length; i++) {
     sum += array[i];
   }
-  let formatSum = sum.toLocaleString(
-    undefined, 
-    { minimumFractionDigits: 2 }
-  );
-  
+  let formatSum = sum.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
   $("#totalCostDisp").text("$" + formatSum);
 };
 
@@ -73,19 +78,17 @@ let calcTax = (array) => {
   for (let i = 0; i < array.length; i++) {
     sum += array[i];
   }
-  let taxAmount = (sum * taxPer);
-  let formatTax = taxAmount.toLocaleString(
-    undefined, 
-    { minimumFractionDigits: 2 }
-  );
-  console.log('formatTax: ', formatTax)
+  let taxAmount = sum * taxPer;
+  let formatTax = taxAmount.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+  });
+  console.log("formatTax: ", formatTax);
   $("#totalTaxDisp").text("$" + formatTax);
   taxBatch = taxAmount;
 };
 
 let updateBtn = (id) => {
   $("#updateBtn").on("click", function (event) {
-   
     let vendor = $("#eVendor").val().trim();
     let cost = $("#eCost").val().trim();
     let date = $("#eDatepicker").val().trim();
@@ -158,6 +161,63 @@ let batchOut = (array) => {
   $("#batchBtn").on("click", function (event) {
     event.preventDefault();
   });
+};
+
+let handleFileSelect = (event) => {
+  selectedFile = event.target.files[0];
+  console.log("selectedFile: ", selectedFile);
+
+  let fileVendor = $("#vendor").val();
+
+  fileUpload = selectedFile;
+
+  // Create the file metadata
+  var metadata = {
+    contentType: "image/jpeg",
+    name: fileVendor,
+  };
+  var uploadTask = storageRef
+    .child("orders/" + fileUpload.name)
+    .put(fileUpload, metadata);
+  uploadTask.on(
+    firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+    function (snapshot) {
+      switch (snapshot.state) {
+        case firebase.storage.TaskState.PAUSED: // or 'paused'
+          console.log("Upload is paused");
+          break;
+        case firebase.storage.TaskState.RUNNING: // or 'running'
+          console.log("Upload is running");
+          break;
+      }
+    },
+    function (error) {
+      // A full list of error codes is available at
+      // https://firebase.google.com/docs/storage/web/handle-errors
+      switch (error.code) {
+        case "storage/unauthorized":
+          // User doesn't have permission to access the object
+          break;
+
+        case "storage/canceled":
+          // User canceled the upload
+          break;
+
+        case "storage/unknown":
+          // Unknown error occurred, inspect error.serverResponse
+          break;
+      }
+    },
+    function () {
+      // Upload completed successfully, now we can get the download URL
+      uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+        console.log("File available at", downloadURL);
+        url = downloadURL;
+        console.log("url at uploadTask function: ", url);
+        console.log('orderUpload: ', orderUpload)
+      });
+    }
+  );
 };
 
 let retreive = () => {
@@ -272,11 +332,13 @@ let retreive = () => {
     }
   });
 };
-///FILE UPLOAD
+///FILE UPLOAD***************************************************************
+var storageRef = firebase.storage().ref();
+// var selectedFile;
 
+// // File or Blob named mountains.jpg
+var selectedFile;
 
-
-///FILE UPLOAD END
-
+///FILE UPLOAD END***************************************************************
 
 retreive();
