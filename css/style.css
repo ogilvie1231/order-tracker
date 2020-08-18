@@ -80,6 +80,10 @@ table {
   color: rgb(189, 189, 189);
 }
 
+.viewLink {
+  /* margin: 5% */
+}
+
 @media only screen and  (max-width: 768px) {
   .open-orders {
     border-left: 0px solid rgb(197, 197, 197);

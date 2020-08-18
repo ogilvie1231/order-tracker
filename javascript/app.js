@@ -6,9 +6,11 @@ let taxableArr = [];
 let taxBatch = 0;
 let fileUpload = {};
 let orderUpload = {};
-let url = '';
+let url = "";
 
 $("#updateDiv").hide();
+
+$("#new-order-btn").hide();
 
 $("#new-order-btn").on("click", function (event) {
   event.preventDefault();
@@ -16,7 +18,7 @@ $("#new-order-btn").on("click", function (event) {
   let cost = $("#cost").val().trim();
   let date = $("#datepicker").val().trim();
   let tax = $("#taxOption").val().trim();
-  
+
   var metadata = {
     contentType: "image/jpeg",
     name: vendor,
@@ -30,6 +32,7 @@ $("#new-order-btn").on("click", function (event) {
     alert("Cost must be a number");
   } else if (date === "") {
     alert("Please enter a date");
+  } else if (url === "") {
   } else {
     let newOrder = {
       vendor,
@@ -39,10 +42,10 @@ $("#new-order-btn").on("click", function (event) {
       tax,
       url,
     };
-console.log('newOrder:', newOrder)
+    console.log("newOrder:", newOrder);
     database.ref().push(newOrder);
 
-    // window.location.reload();
+    window.location.reload();
   }
 });
 
@@ -167,18 +170,18 @@ let handleFileSelect = (event) => {
   selectedFile = event.target.files[0];
   console.log("selectedFile: ", selectedFile);
 
-  let fileVendor = $("#vendor").val();
+  // let fileVendor = $("#vendor").val();
 
   fileUpload = selectedFile;
 
   // Create the file metadata
-  var metadata = {
-    contentType: "image/jpeg",
-    name: fileVendor,
-  };
+  // var metadata = {
+  //   contentType: "image/jpeg",
+  //   name: fileVendor,
+  // };
   var uploadTask = storageRef
     .child("orders/" + fileUpload.name)
-    .put(fileUpload, metadata);
+    .put(fileUpload);
   uploadTask.on(
     firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
     function (snapshot) {
@@ -213,8 +216,7 @@ let handleFileSelect = (event) => {
       uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
         console.log("File available at", downloadURL);
         url = downloadURL;
-        console.log("url at uploadTask function: ", url);
-        console.log('orderUpload: ', orderUpload)
+        $("#new-order-btn").show();
       });
     }
   );
@@ -229,6 +231,7 @@ let retreive = () => {
     let orderDate = childSnapshot.val().date;
     let itemKey = childSnapshot.key;
     let taxStat = childSnapshot.val().tax;
+    let orderUrl = childSnapshot.val().url;
 
     if (childSnapshot.val().complete === "open") {
       totalCost.push(parseInt(cost));
@@ -251,21 +254,24 @@ let retreive = () => {
         $("<td>").text(orderDate),
         $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow("d")),
         $("<td>").text(taxStat),
-        $(
+        $("<td>").html(
+          '<a class="viewLink" target="_blank" href="' + orderUrl + '">View</a>'
+        ),
+        $("<td>").html(
           '<button key="' +
             itemKey +
             '" id="' +
             itemKey +
-            '" class="btn btn-primary delete-btn">'
-        ).text("Complete"),
-        $(
+            '" class="btn btn-primary delete-btn">Complete</button>'
+        ),
+        $("<td>").html(
           '<button key="' +
             itemKey +
             '" id="' +
             itemKey +
             "e" +
-            '" class="btn btn-primary delete-btn">'
-        ).text("edit")
+            '" class="btn btn-primary delete-btn">Edit</button>'
+        )
       );
 
       $("#open-orders > tbody").append(newOrderInfo);
@@ -278,21 +284,21 @@ let retreive = () => {
         $("<td>").text(orderDate),
         $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
         $("<td>").text(taxStat),
-        $(
+        $("<td>").html(
           '<button key="' +
             orderDate +
             '" id="' +
             itemKey +
-            '" class="btn btn-primary delete-btn">'
-        ).text("Open"),
-        $(
+            '" class="btn btn-primary delete-btn">Open</button>'
+        ),
+        $("<td>").html(
           '<button key="' +
             orderDate +
             '" id="' +
             itemKey +
             "f" +
-            '" class="btn btn-primary delete-btn">'
-        ).text("Close")
+            '" class="btn btn-primary delete-btn">Close</button>'
+        )
       );
       $("#complete-orders > tbody").append(closedOrderInfo);
       openBtn(itemKey);
@@ -304,21 +310,21 @@ let retreive = () => {
         $("<td>").text(orderDate),
         $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
         $("<td>").text(taxStat),
-        $(
+        $("<td>").html(
           '<button key="' +
             orderDate +
             '" id="' +
             itemKey +
-            '" class="btn btn-primary delete-btn">'
-        ).text("Open"),
-        $(
+            '" class="btn btn-primary delete-btn">Open</button>'
+        ),
+        $("<td>").html(
           '<button key="' +
             orderDate +
             '" id="' +
             itemKey +
             "d" +
-            '" class="btn btn-primary delete-btn">'
-        ).text("Delete")
+            '" class="btn btn-primary delete-btn">Delete</button>'
+        )
       );
       $("#closed-orders > tbody").append(closedOrderInfo);
 
