@@ -7,6 +7,8 @@ let taxBatch = 0;
 let fileUpload = {};
 let orderUpload = {};
 let url = "";
+var storageRef = firebase.storage().ref();
+var selectedFile;
 
 $("#updateDiv").hide();
 
@@ -285,6 +287,9 @@ let retreive = () => {
         $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
         $("<td>").text(taxStat),
         $("<td>").html(
+          '<a class="viewLink" target="_blank" href="' + orderUrl + '">View</a>'
+        ),
+        $("<td>").html(
           '<button key="' +
             orderDate +
             '" id="' +
@@ -310,6 +315,9 @@ let retreive = () => {
         $("<td>").text(orderDate),
         $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
         $("<td>").text(taxStat),
+        $("<td>").html(
+          '<a class="viewLink" target="_blank" href="' + orderUrl + '">View</a>'
+        ),
         $("<td>").html(
           '<button key="' +
             orderDate +
@@ -338,13 +346,5 @@ let retreive = () => {
     }
   });
 };
-///FILE UPLOAD***************************************************************
-var storageRef = firebase.storage().ref();
-// var selectedFile;
-
-// // File or Blob named mountains.jpg
-var selectedFile;
-
-///FILE UPLOAD END***************************************************************
 
 retreive();
