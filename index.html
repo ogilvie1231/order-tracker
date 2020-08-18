@@ -10,6 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-storage.js"></script>
     <!-- <script src="/__/firebase/7.17.1/firebase-auth.js"></script> -->
 
     <!-- BootStrap -->
@@ -129,8 +130,10 @@
                   <th scope="col">Date</th>
                   <th scope="col">Age</th>
                   <th scope="col">Tax Status</th>
+                  <th scope="col">View Order</th>
                   <th scope="col">Complete</th>
-                  <!-- <th scope="col">Edit</th> -->
+                  <th scope="col">Edit</th>
+                  <th scope="col">Delete</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -170,10 +173,10 @@
                   <th scope="col">Date</th>
                   <th scope="col">Age</th>
                   <th scope="col">Tax Status</th>
-                  <th scope="col">Status</th>
-                  <!-- <th scope="col">Frequency</th>
-                      <th scope="col">Next train</th>
-                      <th scope="col">Minutes</th> -->
+                  <th scope="col">View Order</th>
+                  <th scope="col">Re-Open</th>
+                 <th scope="col">Close</th>
+                 <th scope="col">Delete</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -192,7 +195,9 @@
                   <th scope="col">Date</th>
                   <th scope="col">Age</th>
                   <th scope="col">Tax Status</th>
+                  <th scope="col">View Order</th>
                   <th scope="col">Complete</th>
+                  <th scope="col">Delete</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -259,12 +264,13 @@
                 File
               </label>
               <input
-                data-label="vendor"
+              onchange='handleFileSelect(event)'
+                data-label="file"
                 type="file"
                 name=""
-                id="vendor"
-                class="form-control"
-                placeholder="Vendor"
+                id="file"
+   
+                placeholder="file"
               />
             </div>
             <button type="submit" id="new-order-btn" class="btn btn-primary">

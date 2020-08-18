@@ -1,20 +1,31 @@
-
 var database = firebase.database();
 
 let totalCost = [];
 let orderArr = [];
 let taxableArr = [];
 let taxBatch = 0;
+let fileUpload = {};
+let orderUpload = {};
+let url = "";
+var storageRef = firebase.storage().ref();
+var selectedFile;
 
 $("#updateDiv").hide();
 
+$("#new-order-btn").hide();
+
 $("#new-order-btn").on("click", function (event) {
+  event.preventDefault();
   let vendor = $("#vendor").val().trim();
   let cost = $("#cost").val().trim();
   let date = $("#datepicker").val().trim();
   let tax = $("#taxOption").val().trim();
 
-  event.preventDefault();
+  var metadata = {
+    contentType: "image/jpeg",
+    name: vendor,
+  };
+
   if (vendor === "") {
     alert("please enter the vendor");
   } else if (cost === "") {
@@ -23,6 +34,7 @@ $("#new-order-btn").on("click", function (event) {
     alert("Cost must be a number");
   } else if (date === "") {
     alert("Please enter a date");
+  } else if (url === "") {
   } else {
     let newOrder = {
       vendor,
@@ -30,8 +42,9 @@ $("#new-order-btn").on("click", function (event) {
       date,
       complete: "open",
       tax,
+      url,
     };
-
+    console.log("newOrder:", newOrder);
     database.ref().push(newOrder);
 
     window.location.reload();
@@ -59,11 +72,8 @@ let addCost = (array) => {
   for (let i = 0; i < array.length; i++) {
     sum += array[i];
   }
-  let formatSum = sum.toLocaleString(
-    undefined, 
-    { minimumFractionDigits: 2 }
-  );
-  
+  let formatSum = sum.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
   $("#totalCostDisp").text("$" + formatSum);
 };
 
@@ -73,19 +83,17 @@ let calcTax = (array) => {
   for (let i = 0; i < array.length; i++) {
     sum += array[i];
   }
-  let taxAmount = (sum * taxPer);
-  let formatTax = taxAmount.toLocaleString(
-    undefined, 
-    { minimumFractionDigits: 2 }
-  );
-  console.log('formatTax: ', formatTax)
+  let taxAmount = sum * taxPer;
+  let formatTax = taxAmount.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+  });
+  console.log("formatTax: ", formatTax);
   $("#totalTaxDisp").text("$" + formatTax);
   taxBatch = taxAmount;
 };
 
 let updateBtn = (id) => {
   $("#updateBtn").on("click", function (event) {
-   
     let vendor = $("#eVendor").val().trim();
     let cost = $("#eCost").val().trim();
     let date = $("#eDatepicker").val().trim();
@@ -160,6 +168,62 @@ let batchOut = (array) => {
   });
 };
 
+let handleFileSelect = (event) => {
+  selectedFile = event.target.files[0];
+  console.log("selectedFile: ", selectedFile);
+
+  // let fileVendor = $("#vendor").val();
+
+  fileUpload = selectedFile;
+
+  // Create the file metadata
+  // var metadata = {
+  //   contentType: "image/jpeg",
+  //   name: fileVendor,
+  // };
+  var uploadTask = storageRef
+    .child("orders/" + fileUpload.name)
+    .put(fileUpload);
+  uploadTask.on(
+    firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+    function (snapshot) {
+      switch (snapshot.state) {
+        case firebase.storage.TaskState.PAUSED: // or 'paused'
+          console.log("Upload is paused");
+          break;
+        case firebase.storage.TaskState.RUNNING: // or 'running'
+          console.log("Upload is running");
+          break;
+      }
+    },
+    function (error) {
+      // A full list of error codes is available at
+      // https://firebase.google.com/docs/storage/web/handle-errors
+      switch (error.code) {
+        case "storage/unauthorized":
+          // User doesn't have permission to access the object
+          break;
+
+        case "storage/canceled":
+          // User canceled the upload
+          break;
+
+        case "storage/unknown":
+          // Unknown error occurred, inspect error.serverResponse
+          break;
+      }
+    },
+    function () {
+      // Upload completed successfully, now we can get the download URL
+      uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+        console.log("File available at", downloadURL);
+        url = downloadURL;
+        $("#new-order-btn").show();
+      });
+    }
+  );
+};
+
 let retreive = () => {
   database.ref().on("child_added", function (childSnapshot) {
     orderArr.push(childSnapshot.val());
@@ -169,6 +233,7 @@ let retreive = () => {
     let orderDate = childSnapshot.val().date;
     let itemKey = childSnapshot.key;
     let taxStat = childSnapshot.val().tax;
+    let orderUrl = childSnapshot.val().url;
 
     if (childSnapshot.val().complete === "open") {
       totalCost.push(parseInt(cost));
@@ -191,26 +256,38 @@ let retreive = () => {
         $("<td>").text(orderDate),
         $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow("d")),
         $("<td>").text(taxStat),
-        $(
+        $("<td>").html(
+          '<a class="viewLink" target="_blank" href="' + orderUrl + '">View</a>'
+        ),
+        $("<td>").html(
           '<button key="' +
             itemKey +
             '" id="' +
             itemKey +
-            '" class="btn btn-primary delete-btn">'
-        ).text("Complete"),
-        $(
+            '" class="btn btn-primary delete-btn">Complete</button>'
+        ),
+        $("<td>").html(
           '<button key="' +
             itemKey +
             '" id="' +
             itemKey +
             "e" +
-            '" class="btn btn-primary delete-btn">'
-        ).text("edit")
+            '" class="btn btn-primary delete-btn">Edit</button>'
+        ),
+        $("<td>").html(
+          '<button key="' +
+            orderDate +
+            '" id="' +
+            itemKey +
+            "d" +
+            '" class="btn btn-primary delete-btn">Delete</button>'
+        )
       );
 
       $("#open-orders > tbody").append(newOrderInfo);
       completeBtn(itemKey);
       editBtn(itemKey, vendor, cost, orderDate, taxStat);
+      deleteBtn(itemKey);
     } else if (childSnapshot.val().complete == "complete") {
       let closedOrderInfo = $("<tr>").append(
         $("<td>").text(vendor),
@@ -218,25 +295,37 @@ let retreive = () => {
         $("<td>").text(orderDate),
         $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
         $("<td>").text(taxStat),
-        $(
+        $("<td>").html(
+          '<a class="viewLink" target="_blank" href="' + orderUrl + '">View</a>'
+        ),
+        $("<td>").html(
           '<button key="' +
             orderDate +
             '" id="' +
             itemKey +
-            '" class="btn btn-primary delete-btn">'
-        ).text("Open"),
-        $(
+            '" class="btn btn-primary delete-btn">Open</button>'
+        ),
+        $("<td>").html(
           '<button key="' +
             orderDate +
             '" id="' +
             itemKey +
             "f" +
-            '" class="btn btn-primary delete-btn">'
-        ).text("Close")
+            '" class="btn btn-primary delete-btn">Close</button>'
+        ),
+        $("<td>").html(
+          '<button key="' +
+            orderDate +
+            '" id="' +
+            itemKey +
+            "d" +
+            '" class="btn btn-primary delete-btn">Delete</button>'
+        )
       );
       $("#complete-orders > tbody").append(closedOrderInfo);
       openBtn(itemKey);
       closeBtn(itemKey);
+      deleteBtn(itemKey);
     } else if (childSnapshot.val().complete == "closed") {
       let closedOrderInfo = $("<tr>").append(
         $("<td>").text(vendor),
@@ -244,21 +333,24 @@ let retreive = () => {
         $("<td>").text(orderDate),
         $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
         $("<td>").text(taxStat),
-        $(
+        $("<td>").html(
+          '<a class="viewLink" target="_blank" href="' + orderUrl + '">View</a>'
+        ),
+        $("<td>").html(
           '<button key="' +
             orderDate +
             '" id="' +
             itemKey +
-            '" class="btn btn-primary delete-btn">'
-        ).text("Open"),
-        $(
+            '" class="btn btn-primary delete-btn">Open</button>'
+        ),
+        $("<td>").html(
           '<button key="' +
             orderDate +
             '" id="' +
             itemKey +
             "d" +
-            '" class="btn btn-primary delete-btn">'
-        ).text("Delete")
+            '" class="btn btn-primary delete-btn">Delete</button>'
+        )
       );
       $("#closed-orders > tbody").append(closedOrderInfo);
 
@@ -272,11 +364,5 @@ let retreive = () => {
     }
   });
 };
-///FILE UPLOAD
-
-
-
-///FILE UPLOAD END
-
 
 retreive();
