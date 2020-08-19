@@ -100,7 +100,6 @@ let addCostComplete = (array) => {
 };
 
 
-
 let calcTax = (array) => {
   let sum = 0;
   let taxPer = 0.56;
