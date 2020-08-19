@@ -2,6 +2,8 @@ var database = firebase.database();
 
 let totalCost = [];
 let orderArr = [];
+let openCostArr = [];
+let completeCostArr = [];
 let taxableArr = [];
 let taxBatch = 0;
 let fileUpload = {};
@@ -77,6 +79,28 @@ let addCost = (array) => {
   $("#totalCostDisp").text("$" + formatSum);
 };
 
+let addCostOpen = (array) => {
+  let sum = 0;
+  for (let i = 0; i < array.length; i++) {
+    sum += array[i];
+  }
+  let formatSum = sum.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+  $("#openCostDisp").text("$" + formatSum);
+};
+
+let addCostComplete = (array) => {
+  let sum = 0;
+  for (let i = 0; i < array.length; i++) {
+    sum += array[i];
+  }
+  let formatSum = sum.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+  $("#completeCostDisp").text("$" + formatSum);
+};
+
+
+
 let calcTax = (array) => {
   let sum = 0;
   let taxPer = 0.56;
@@ -88,7 +112,7 @@ let calcTax = (array) => {
     minimumFractionDigits: 2,
   });
   console.log("formatTax: ", formatTax);
-  $("#totalTaxDisp").text("$" + formatTax);
+  $("#totalTaxDisp").text("      $" + formatTax + ' ');
   taxBatch = taxAmount;
 };
 
@@ -235,7 +259,24 @@ let retreive = () => {
     let taxStat = childSnapshot.val().tax;
     let orderUrl = childSnapshot.val().url;
 
+    ///////////////////////////
+
+
     if (childSnapshot.val().complete === "open") {
+      openCostArr.push(parseInt(cost));
+    }
+
+    addCostOpen(openCostArr);
+
+    if (childSnapshot.val().complete === "complete") {
+      completeCostArr.push(parseInt(cost));
+    }
+    addCostComplete(completeCostArr);
+    console.log('completeCostArr: ', completeCostArr)
+    
+    ////////////////////////////
+    if (childSnapshot.val().complete === "open" ||
+    childSnapshot.val().complete === "complete") {
       totalCost.push(parseInt(cost));
     }
 
