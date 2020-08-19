@@ -23,11 +23,6 @@ $("#new-order-btn").on("click", function (event) {
   let date = $("#datepicker").val().trim();
   let tax = $("#taxOption").val().trim();
 
-  var metadata = {
-    contentType: "image/jpeg",
-    name: vendor,
-  };
-
   if (vendor === "") {
     alert("please enter the vendor");
   } else if (cost === "") {
@@ -46,9 +41,7 @@ $("#new-order-btn").on("click", function (event) {
       tax,
       url,
     };
-    console.log("newOrder:", newOrder);
     database.ref().push(newOrder);
-
     window.location.reload();
   }
 });
@@ -110,7 +103,6 @@ let calcTax = (array) => {
   let formatTax = taxAmount.toLocaleString(undefined, {
     minimumFractionDigits: 2,
   });
-  console.log("formatTax: ", formatTax);
   $("#totalTaxDisp").text("      $" + formatTax + ' ');
   taxBatch = taxAmount;
 };
@@ -128,6 +120,7 @@ let updateBtn = (id) => {
       date,
       complete: "open",
       tax,
+      url,
     });
   });
 };
@@ -139,6 +132,7 @@ let editBtn = (id, curVendor, curCost, curOrderDate, curTaxStat) => {
     $("#eCost").val(curCost);
     $("#eDatepicker").val(curOrderDate);
     $("#eTaxOption").val(curTaxStat);
+    // $('#sampleView').html('<iframe class="previewImg" src="' + url + '" alt="preview">')
     updateBtn(id);
   });
 };
@@ -258,9 +252,6 @@ let retreive = () => {
     let taxStat = childSnapshot.val().tax;
     let orderUrl = childSnapshot.val().url;
 
-    ///////////////////////////
-
-
     if (childSnapshot.val().complete === "open") {
       openCostArr.push(parseInt(cost));
     }
@@ -271,9 +262,7 @@ let retreive = () => {
       completeCostArr.push(parseInt(cost));
     }
     addCostComplete(completeCostArr);
-    console.log('completeCostArr: ', completeCostArr)
     
-    ////////////////////////////
     if (childSnapshot.val().complete === "open" ||
     childSnapshot.val().complete === "complete") {
       totalCost.push(parseInt(cost));

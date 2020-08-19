@@ -4,6 +4,8 @@
   padding: 3%;
   text-align: center;
 }
+
+
 #user{
 margin-left: auto;
 }
@@ -24,6 +26,13 @@ button {
   margin-top: 1%;
 }
 
+.previewImg{
+max-width: 100px;
+float: right;
+position: relative;
+top: -25px;
+}
+
 .form-control {
   margin-bottom: 1%;
 }
@@ -37,13 +46,13 @@ button {
   background-color: aliceblue;
   height: 480px;
   margin-bottom: 2%;
-  /* display: block;
-  margin: auto;
-  max-width: 90%; */
+}
+.edit-form {
+  height: 500px;
+margin-left: 3%;
 }
 
 hr, .open-text {
-  /* max-width: 90%; */
   margin-left: 10%;
 }
 

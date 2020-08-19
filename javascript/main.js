@@ -8,7 +8,6 @@
     if (user) {
       $("#login").hide();
       $("#user").append("Welcome ", user.displayName)
-      console.log('user: ', user.displayName)
     } else if (
       window.location.href === redirectLocal ||
       window.location.href === redirectNetwork ||
@@ -27,7 +26,6 @@
 const logoutBtn = () => {
   $("#logout").on("click", function (event) {
     firebase.auth().signOut();
-    console.log("logout Button");
   });
 };
 logoutBtn();

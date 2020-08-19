@@ -66,8 +66,8 @@
 
       <div class="row">
         <div class="open-order-div col-lg-8 col-md-10 col-sm-5">
-          <div class="container-fluid border order-input" id="updateDiv">
-            <form class="form">
+          <div class="container-fluid border edit-form order-input" id="updateDiv">
+            <form class="form ">
               <div>
                 <label for="">
                   Vendor
@@ -110,6 +110,23 @@
                   <option>Tax Paid</option>
                   <option>Taxable</option>
                 </select>
+              </div>
+              <div>
+                <label for="file">
+                  File
+                </label>
+                <input
+                onchange='handleFileSelect(event)'
+                  data-label="file"
+                  type="file"
+                  name=""
+                  id="file"
+                  class="form-control-file"
+                  placeholder="file"
+                />
+                <p id="sampleView">
+   
+                </p>
               </div>
 
               <button type="submit" id="updateBtn" class="btn btn-primary">
@@ -277,7 +294,7 @@
                 type="file"
                 name=""
                 id="file"
-   
+                class="form-control-file"
                 placeholder="file"
               />
             </div>
