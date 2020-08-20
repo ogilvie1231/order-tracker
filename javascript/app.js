@@ -134,6 +134,7 @@ let editBtn = (id, curVendor, curCost, curOrderDate, curTaxStat) => {
     $("#eTaxOption").val(curTaxStat);
     // $('#sampleView').html('<iframe class="previewImg" src="' + url + '" alt="preview">')
     updateBtn(id);
+    $("#updateBtn").hide();
   });
 };
 
@@ -187,7 +188,6 @@ let batchOut = (array) => {
 
 let handleFileSelect = (event) => {
   selectedFile = event.target.files[0];
-  console.log("selectedFile: ", selectedFile);
 
   // let fileVendor = $("#vendor").val();
 
@@ -236,6 +236,7 @@ let handleFileSelect = (event) => {
         console.log("File available at", downloadURL);
         url = downloadURL;
         $("#new-order-btn").show();
+        $("#updateBtn").show();
       });
     }
   );
