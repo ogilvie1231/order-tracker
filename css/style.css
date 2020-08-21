@@ -88,7 +88,9 @@ table {
 #new-order-btn {
     float: right;
 }
-
+.load {
+  float: right;
+}
 .header {
   color: rgb(189, 189, 189);
 }

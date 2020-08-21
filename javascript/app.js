@@ -13,8 +13,12 @@ var storageRef = firebase.storage().ref();
 var selectedFile;
 
 $("#updateDiv").hide();
+$("#eLoading").hide();
+$("#eIsLoaded").hide();
+$("#loading").hide();
+$("#isLoaded").hide();
+// $("#new-order-btn").hide();
 
-$("#new-order-btn").hide();
 
 $("#new-order-btn").on("click", function (event) {
   event.preventDefault();
@@ -32,6 +36,7 @@ $("#new-order-btn").on("click", function (event) {
   } else if (date === "") {
     alert("Please enter a date");
   } else if (url === "") {
+    alert('Wait for upload to complete')
   } else {
     let newOrder = {
       vendor,
@@ -45,6 +50,7 @@ $("#new-order-btn").on("click", function (event) {
     window.location.reload();
   }
 });
+
 
 // Date Picker
 $(function () {
@@ -62,10 +68,10 @@ $(function () {
   });
 });
 
-let addCost = (array) => {
+let addCost = (costArray) => {
   let sum = 0;
-  for (let i = 0; i < array.length; i++) {
-    sum += array[i];
+  for (let i = 0; i < costArray.length; i++) {
+    sum += costArray[i];
   }
   let formatSum = sum.toLocaleString(undefined, { minimumFractionDigits: 2 });
 
@@ -134,7 +140,7 @@ let editBtn = (id, curVendor, curCost, curOrderDate, curTaxStat) => {
     $("#eTaxOption").val(curTaxStat);
     // $('#sampleView').html('<iframe class="previewImg" src="' + url + '" alt="preview">')
     updateBtn(id);
-    $("#updateBtn").hide();
+    // $("#updateBtn").hide();
   });
 };
 
@@ -210,6 +216,8 @@ let handleFileSelect = (event) => {
           break;
         case firebase.storage.TaskState.RUNNING: // or 'running'
           console.log("Upload is running");
+          $("#eLoading").show();
+          $("#loading").show();
           break;
       }
     },
@@ -235,8 +243,11 @@ let handleFileSelect = (event) => {
       uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
         console.log("File available at", downloadURL);
         url = downloadURL;
-        $("#new-order-btn").show();
-        $("#updateBtn").show();
+        // $("#new-order-btn").show();
+        $("#eLoading").hide();
+        $("#eIsLoaded").show();
+        $("#loading").hide();
+        $("#isLoaded").show();
       });
     }
   );
