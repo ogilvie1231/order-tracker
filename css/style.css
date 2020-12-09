@@ -94,6 +94,9 @@ table {
 .header {
   color: rgb(189, 189, 189);
 }
+.delete-btn{ 
+  margin: 3%;
+}
 
 @media only screen and  (max-width: 768px) {
   .open-orders {

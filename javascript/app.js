@@ -19,7 +19,6 @@ $("#loading").hide();
 $("#isLoaded").hide();
 // $("#new-order-btn").hide();
 
-
 $("#new-order-btn").on("click", function (event) {
   event.preventDefault();
   let vendor = $("#vendor").val().trim();
@@ -36,7 +35,7 @@ $("#new-order-btn").on("click", function (event) {
   } else if (date === "") {
     alert("Please enter a date");
   } else if (url === "") {
-    alert('Wait for upload to complete')
+    alert("Wait for upload to complete");
   } else {
     let newOrder = {
       vendor,
@@ -50,7 +49,6 @@ $("#new-order-btn").on("click", function (event) {
     window.location.reload();
   }
 });
-
 
 // Date Picker
 $(function () {
@@ -98,7 +96,6 @@ let addCostComplete = (array) => {
   $("#completeCostDisp").text("$" + formatSum);
 };
 
-
 let calcTax = (array) => {
   let sum = 0;
   let taxPer = 0.56;
@@ -109,7 +106,7 @@ let calcTax = (array) => {
   let formatTax = taxAmount.toLocaleString(undefined, {
     minimumFractionDigits: 2,
   });
-  $("#totalTaxDisp").text("      $" + formatTax + ' ');
+  $("#totalTaxDisp").text("      $" + formatTax + " ");
   taxBatch = taxAmount;
 };
 
@@ -145,7 +142,7 @@ let editBtn = (id, curVendor, curCost, curOrderDate, curTaxStat) => {
 };
 
 let completeBtn = (id) => {
-  $("#" + id + "").on("click", function () {
+  $("#" + id + "c" + "").on("click", function () {
     database.ref(id).update({
       complete: "complete",
     });
@@ -161,7 +158,7 @@ let deleteBtn = (id) => {
 };
 
 let openBtn = (id) => {
-  $("#" + id + "").on("click", function () {
+  $("#" + id + "o" + "").on("click", function () {
     database.ref(id).update({
       complete: "open",
     });
@@ -195,15 +192,8 @@ let batchOut = (array) => {
 let handleFileSelect = (event) => {
   selectedFile = event.target.files[0];
 
-  // let fileVendor = $("#vendor").val();
-
   fileUpload = selectedFile;
 
-  // Create the file metadata
-  // var metadata = {
-  //   contentType: "image/jpeg",
-  //   name: fileVendor,
-  // };
   var uploadTask = storageRef
     .child("orders/" + fileUpload.name)
     .put(fileUpload);
@@ -254,157 +244,403 @@ let handleFileSelect = (event) => {
 };
 
 let retreive = () => {
-  database.ref().orderByChild('vendor').on("child_added", function (childSnapshot)
-   {
-    orderArr.push(childSnapshot.val());
+  database
+    .ref()
+    .orderByChild("vendor")
+    .on("child_added", function (childSnapshot) {
+      orderArr.push(childSnapshot.val());
 
-    let vendor = childSnapshot.val().vendor;
-    let cost = childSnapshot.val().cost;
-    let orderDate = childSnapshot.val().date;
-    let itemKey = childSnapshot.key;
-    let taxStat = childSnapshot.val().tax;
-    let orderUrl = childSnapshot.val().url;
+      let vendor = childSnapshot.val().vendor;
+      let cost = childSnapshot.val().cost;
+      let orderDate = childSnapshot.val().date;
+      let itemKey = childSnapshot.key;
+      let taxStat = childSnapshot.val().tax;
+      let orderUrl = childSnapshot.val().url;
 
-    if (childSnapshot.val().complete === "open") {
-      openCostArr.push(parseInt(cost));
-    }
+      if (childSnapshot.val().complete === "open") {
+        openCostArr.push(parseInt(cost));
+      }
 
-    addCostOpen(openCostArr);
+      addCostOpen(openCostArr);
 
-    if (childSnapshot.val().complete === "complete") {
-      completeCostArr.push(parseInt(cost));
-    }
-    addCostComplete(completeCostArr);
-    
-    if (childSnapshot.val().complete === "open" ||
-    childSnapshot.val().complete === "complete") {
-      totalCost.push(parseInt(cost));
-    }
+      if (childSnapshot.val().complete === "complete") {
+        completeCostArr.push(parseInt(cost));
+      }
+      addCostComplete(completeCostArr);
 
-    addCost(totalCost);
+      if (
+        childSnapshot.val().complete === "open" ||
+        childSnapshot.val().complete === "complete"
+      ) {
+        totalCost.push(parseInt(cost));
+      }
 
-    if (
-      (childSnapshot.val().tax === "Taxable" &&
-        childSnapshot.val().complete === "open") ||
-      (childSnapshot.val().tax === "Taxable" &&
-        childSnapshot.val().complete === "complete")
-    ) {
-      taxableArr.push(parseInt(cost));
-    }
-    if (childSnapshot.val().complete == "open") {
-      let newOrderInfo = $("<tr>").append(
-        $("<td>").text(vendor),
-        $("<td>").text("$" + cost),
-        $("<td>").text(orderDate),
-        $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow("d")),
-        $("<td>").text(taxStat),
-        $("<td>").html(
-          '<a class="viewLink" target="_blank" href="' + orderUrl + '">View</a>'
-        ),
-        $("<td>").html(
-          '<button key="' +
-            itemKey +
-            '" id="' +
-            itemKey +
-            '" class="btn btn-primary delete-btn">Complete</button>'
-        ),
-        $("<td>").html(
-          '<button key="' +
-            itemKey +
-            '" id="' +
-            itemKey +
-            "e" +
-            '" class="btn btn-primary delete-btn">Edit</button>'
-        ),
-        $("<td>").html(
-          '<button key="' +
-            orderDate +
-            '" id="' +
-            itemKey +
-            "d" +
-            '" class="btn btn-primary delete-btn">Delete</button>'
-        )
-      );
+      addCost(totalCost);
 
-      $("#open-orders > tbody").append(newOrderInfo);
-      completeBtn(itemKey);
-      editBtn(itemKey, vendor, cost, orderDate, taxStat);
-      deleteBtn(itemKey);
-    } else if (childSnapshot.val().complete == "complete") {
-      let closedOrderInfo = $("<tr>").append(
-        $("<td>").text(vendor),
-        $("<td>").text("$" + cost),
-        $("<td>").text(orderDate),
-        $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
-        $("<td>").text(taxStat),
-        $("<td>").html(
-          '<a class="viewLink" target="_blank" href="' + orderUrl + '">View</a>'
-        ),
-        $("<td>").html(
-          '<button key="' +
-            orderDate +
-            '" id="' +
-            itemKey +
-            '" class="btn btn-primary delete-btn">Open</button>'
-        ),
-        $("<td>").html(
-          '<button key="' +
-            orderDate +
-            '" id="' +
-            itemKey +
-            "f" +
-            '" class="btn btn-primary delete-btn">Close</button>'
-        ),
-        $("<td>").html(
-          '<button key="' +
-            orderDate +
-            '" id="' +
-            itemKey +
-            "d" +
-            '" class="btn btn-primary delete-btn">Delete</button>'
-        )
-      );
-      $("#complete-orders > tbody").append(closedOrderInfo);
-      openBtn(itemKey);
-      closeBtn(itemKey);
-      deleteBtn(itemKey);
-    } else if (childSnapshot.val().complete == "closed") {
-      let closedOrderInfo = $("<tr>").append(
-        $("<td>").text(vendor),
-        $("<td>").text("$" + cost),
-        $("<td>").text(orderDate),
-        $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
-        $("<td>").text(taxStat),
-        $("<td>").html(
-          '<a class="viewLink" target="_blank" href="' + orderUrl + '">View</a>'
-        ),
-        $("<td>").html(
-          '<button key="' +
-            orderDate +
-            '" id="' +
-            itemKey +
-            '" class="btn btn-primary delete-btn">Open</button>'
-        ),
-        $("<td>").html(
-          '<button key="' +
-            orderDate +
-            '" id="' +
-            itemKey +
-            "d" +
-            '" class="btn btn-primary delete-btn">Delete</button>'
-        )
-      );
-      $("#closed-orders > tbody").append(closedOrderInfo);
+      if (
+        (childSnapshot.val().tax === "Taxable" &&
+          childSnapshot.val().complete === "open") ||
+        (childSnapshot.val().tax === "Taxable" &&
+          childSnapshot.val().complete === "complete")
+      ) {
+        taxableArr.push(parseInt(cost));
+      }
+      if (childSnapshot.val().complete == "open") {
+        let newOrderInfo = $("<tr>").append(
+          $("<td>").text(vendor),
+          $("<td>").text("$" + cost),
+          $("<td>").text(orderDate),
+          $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow("d")),
+          $("<td>").text(taxStat),
+          $("<td>").html(
+            '<a class="viewLink" target="_blank" href="' +
+              orderUrl +
+              '">View</a>'
+          ),
+          // $("<td>").html(
+          //   '<button key="' +
+          //     itemKey +
+          //     '" id="' +
+          //     itemKey +
+          //     '" class="btn btn-primary delete-btn">Complete</button>'
+          // ),
+          // $("<td>").html(
+          //   '<button key="' +
+          //     itemKey +
+          //     '" id="' +
+          //     itemKey +
+          //     "e" +
+          //     '" class="btn btn-primary delete-btn">Edit</button>'
+          // ),
+          // $("<td>").html(
+          //   '<button key="' +
+          //     orderDate +
+          //     '" id="' +
+          //     itemKey +
+          //     "d" +
+          //     '" class="btn btn-primary delete-btn">Delete</button>'
+          // ),
+          $("<td>").html(
+            '<div class="dropdown">' +
+              "<button" +
+              'class="btn btn-primary dropdown-toggle"' +
+              'type="button"' +
+              'data-toggle="dropdown">' +
+              "Action" +
+              '<span class="caret"></span>' +
+              "</button>" +
+              '<ul class="dropdown-menu">' +
+              "<li>" +
+              '<button key="' +
+              orderDate +
+              '" id="' +
+              itemKey +
+              "d" +
+              '" class="btn btn-primary delete-btn">Delete</button>' +
+              "</li>" +
+              "<li>" +
+              '<button key="' +
+              itemKey +
+              '" id="' +
+              itemKey +
+              "e" +
+              '" class="btn btn-primary delete-btn">Edit</button>' +
+              "</li>" +
+              "<li>" +
+              '<button key="' +
+              itemKey +
+              '" id="' +
+              itemKey +
+              "c" +
+              '" class="btn btn-primary delete-btn">Complete</button>' +
+              "</li>" +
+              "</li>" +
+              '<button key="' +
+              orderDate +
+              '" id="' +
+              itemKey +
+              "f" +
+              '" class="btn btn-primary delete-btn">Close</button>' +
+              "<li>" +
+              "</ul>" +
+              "</div>"
+          )
+        );
 
-      completeBtn(itemKey);
-      deleteBtn(itemKey);
-    }
-    calcTax(taxableArr);
+        $("#open-orders > tbody").append(newOrderInfo);
+        completeBtn(itemKey);
+        editBtn(itemKey, vendor, cost, orderDate, taxStat);
+        deleteBtn(itemKey);
+        closeBtn(itemKey);
+      } else if (childSnapshot.val().complete == "complete") {
+        let closedOrderInfo = $("<tr>").append(
+          $("<td>").text(vendor),
+          $("<td>").text("$" + cost),
+          $("<td>").text(orderDate),
+          $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
+          $("<td>").text(taxStat),
+          $("<td>").html(
+            '<a class="viewLink" target="_blank" href="' +
+              orderUrl +
+              '">View</a>'
+          ),
+          // $("<td>").html(
+          // '<button key="' +
+          //   orderDate +
+          //   '" id="' +
+          //   itemKey +
+          //   '" class="btn btn-primary delete-btn">Open</button>'
+          // ),
+          // $("<td>").html(
+          //   '<button key="' +
+          //     orderDate +
+          //     '" id="' +
+          //     itemKey +
+          //     "f" +
+          //     '" class="btn btn-primary delete-btn">Close</button>'
+          // ),
+          // $("<td>").html(
+          //   '<button key="' +
+          //     orderDate +
+          //     '" id="' +
+          //     itemKey +
+          //     "d" +
+          //     '" class="btn btn-primary delete-btn">Delete</button>'
+          // )
+          $("<td>").html(
+            '<div class="dropdown">' +
+              // '<button class="btn> test </button>' +
+              "<button" +
+              'class="btn btn-primary dropdown-toggle"' +
+              'type="button"' +
+              'data-toggle="dropdown">' +
+              "Action" +
+              '<span class="caret"></span>' +
+              "</button>" +
+              '<ul class="dropdown-menu">' +
+              "<li>" +
+              '<button key="' +
+              orderDate +
+              '" id="' +
+              itemKey +
+              "d" +
+              '" class="btn btn-primary delete-btn">Delete</button>' +
+              "</li>" +
+              "<li>" +
+              '<button key="' +
+              itemKey +
+              '" id="' +
+              itemKey +
+              "e" +
+              '" class="btn btn-primary delete-btn">Edit</button>' +
+              "</li>" +
+              "<li>" +
+              '<button key="' +
+              orderDate +
+              '" id="' +
+              itemKey +
+              "o" +
+              '" class="btn btn-primary delete-btn">Open</button>' +
+              "</li>" +
+              "</li>" +
+              '<button key="' +
+              orderDate +
+              '" id="' +
+              itemKey +
+              "f" +
+              '" class="btn btn-primary delete-btn">Close</button>' +
+              "<li>" +
+              "</ul>" +
+              "</div>"
+          )
+        );
+        $("#complete-orders > tbody").append(closedOrderInfo);
+        editBtn(itemKey, vendor, cost, orderDate, taxStat);
+        deleteBtn(itemKey);
+        closeBtn(itemKey);
+        openBtn(itemKey);
+       } 
 
-    if (taxableArr > 0) {
-      batchOut(taxableArr);
-    }
-  });
+       ///// Trial Start
+
+       if (childSnapshot.val().complete == "closed") {
+        let newOrderInfo = $("<tr>").append(
+          $("<td>").text(vendor),
+          $("<td>").text("$" + cost),
+          $("<td>").text(orderDate),
+          $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow("d")),
+          $("<td>").text(taxStat),
+          $("<td>").html(
+            '<a class="viewLink" target="_blank" href="' +
+              orderUrl +
+              '">View</a>'
+          ),
+          // $("<td>").html(
+          //   '<button key="' +
+          //     itemKey +
+          //     '" id="' +
+          //     itemKey +
+          //     '" class="btn btn-primary delete-btn">Complete</button>'
+          // ),
+          // $("<td>").html(
+          //   '<button key="' +
+          //     itemKey +
+          //     '" id="' +
+          //     itemKey +
+          //     "e" +
+          //     '" class="btn btn-primary delete-btn">Edit</button>'
+          // ),
+          // $("<td>").html(
+          //   '<button key="' +
+          //     orderDate +
+          //     '" id="' +
+          //     itemKey +
+          //     "d" +
+          //     '" class="btn btn-primary delete-btn">Delete</button>'
+          // ),
+          $("<td>").html(
+            '<div class="dropdown">' +
+              "<button" +
+              'class="btn btn-primary dropdown-toggle"' +
+              'type="button"' +
+              'data-toggle="dropdown">' +
+              "Action" +
+              '<span class="caret"></span>' +
+              "</button>" +
+              '<ul class="dropdown-menu">' +
+              "<li>" +
+              '<button key="' +
+              orderDate +
+              '" id="' +
+              itemKey +
+              "d" +
+              '" class="btn btn-primary delete-btn">Delete</button>' +
+              "</li>" +
+              "<li>" +
+              '<button key="' +
+              itemKey +
+              '" id="' +
+              itemKey +
+              "e" +
+              '" class="btn btn-primary delete-btn">Edit</button>' +
+              "</li>" +
+              "<li>" +
+              '<button key="' +
+              itemKey +
+              '" id="' +
+              itemKey +
+              "c" +
+              '" class="btn btn-primary delete-btn">Complete</button>' +
+              "</li>" +
+              "<li>" +
+              '<button key="' +
+              orderDate +
+              '" id="' +
+              itemKey +
+              "o" +
+              '" class="btn btn-primary delete-btn">Open</button>' +
+              "</li>" +
+              "</ul>" +
+              "</div>"
+          )
+        );
+
+        $("#closed-orders > tbody").append(newOrderInfo);
+        completeBtn(itemKey);
+        editBtn(itemKey, vendor, cost, orderDate, taxStat);
+        deleteBtn(itemKey);
+        openBtn(itemKey);
+      } 
+
+       ///// Trial End
+
+
+     // else if (childSnapshot.val().complete == "closed") {
+      //   let closedOrderInfo = $("<tr>").append(
+      //     $("<td>").text(vendor),
+      //     $("<td>").text("$" + cost),
+      //     $("<td>").text(orderDate),
+      //     $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
+      //     $("<td>").text(taxStat),
+      //     $("<td>").html(
+      //       '<a class="viewLink" target="_blank" href="' +
+      //         orderUrl +
+      //         '">View</a>'
+      //     ),
+      //     // $("<td>").html(
+      //     //   '<button key="' +
+      //     //     orderDate +
+      //     //     '" id="' +
+      //     //     itemKey +
+      //     //     '" class="btn btn-primary delete-btn">Open</button>'
+      //     // ),
+      //     // $("<td>").html(
+      //     //   '<button key="' +
+      //     //     orderDate +
+      //     //     '" id="' +
+      //     //     itemKey +
+      //     //     "d" +
+      //     //     '" class="btn btn-primary delete-btn">Delete</button>'
+      //     // )
+      //     $("<td>").html(
+      //       '<div class="dropdown">' +
+      //         "<button" +
+      //         'class="btn btn-primary dropdown-toggle"' +
+      //         'type="button"' +
+      //         'data-toggle="dropdown">' +
+      //         "Action" +
+      //         '<span class="caret"></span>' +
+      //         "</button>" +
+      //         '<ul class="dropdown-menu">' +
+      //         "<li>" +
+      //         '<button key="' +
+      //         orderDate +
+      //         '" id="' +
+      //         itemKey +
+      //         "d" +
+      //         '" class="btn btn-primary delete-btn">Delete</button>' +
+      //         "</li>" +
+      //         "<li>" +
+      //         '<button key="' +
+      //         itemKey +
+      //         '" id="' +
+      //         itemKey +
+      //         "e" +
+      //         '" class="btn btn-primary delete-btn">Edit</button>' +
+      //         "</li>" +
+      //         "<li>" +
+      //         '<button key="' +
+      //         orderDate +
+      //         '" id="' +
+      //         itemKey +
+      //         '" class="btn btn-primary delete-btn">Open</button>' +
+      //         "</li>" +
+
+      //         "<li>" +
+      //         '<button key="' +
+      //         itemKey +
+      //         '" id="' +
+      //         itemKey +
+      //         '" class="btn btn-primary delete-btn">Complete</button>' +
+      //         "</li>" +
+      //         "</ul>" +
+      //         "</div>"
+      //     )
+      //   );
+      //   $("#closed-orders > tbody").append(closedOrderInfo);
+      //   editBtn(itemKey, vendor, cost, orderDate, taxStat);
+      //   deleteBtn(itemKey);
+      //   completeBtn(itemKey);
+      //   openBtn(itemKey);
+      // }
+
+      
+      calcTax(taxableArr);
+
+      if (taxableArr > 0) {
+        batchOut(taxableArr);
+      }
+    });
 };
 
 retreive();

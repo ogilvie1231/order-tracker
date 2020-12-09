@@ -6,7 +6,6 @@
     <title>Order Tracker</title>
 
     <!-- Fire Base -->
-    <!-- <script src="./firebase.js"></script> -->
     <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-auth.js"></script>
@@ -149,9 +148,9 @@
                   <th scope="col">Age</th>
                   <th scope="col">Tax Status</th>
                   <th scope="col">View Order</th>
-                  <th scope="col">Complete</th>
-                  <th scope="col">Edit</th>
-                  <th scope="col">Delete</th>
+                  <th scope="col">Action</th>
+                  <!-- <th scope="col">Edit</th>
+                  <th scope="col">Delete</th> -->
                 </tr>
               </thead>
               <tbody></tbody>
@@ -200,9 +199,7 @@
                   <th scope="col">Age</th>
                   <th scope="col">Tax Status</th>
                   <th scope="col">View Order</th>
-                  <th scope="col">Re-Open</th>
-                 <th scope="col">Close</th>
-                 <th scope="col">Delete</th>
+                 <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -222,8 +219,7 @@
                   <th scope="col">Age</th>
                   <th scope="col">Tax Status</th>
                   <th scope="col">View Order</th>
-                  <th scope="col">Complete</th>
-                  <th scope="col">Delete</th>
+                  <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -259,7 +255,7 @@
                 Cost
               </label>
               <input
-                type="text"
+                type="number"
                 name=""
                 id="cost"
                 class="form-control"
