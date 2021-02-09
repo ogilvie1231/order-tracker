@@ -1,6 +1,7 @@
 var database = firebase.database();
 
 let totalCost = [];
+let taxPeriod = [];
 let orderArr = [];
 let openCostArr = [];
 let completeCostArr = [];
@@ -74,6 +75,15 @@ let addCost = (costArray) => {
   let formatSum = sum.toLocaleString(undefined, { minimumFractionDigits: 2 });
 
   $("#totalCostDisp").text("$" + formatSum);
+};
+let addCost2 = (costArray, display) => {
+  let sum = 0;
+  for (let i = 0; i < costArray.length; i++) {
+    sum += costArray[i];
+  }
+  let formatSum = sum.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+  $("#" + display).text("$" + formatSum);
 };
 
 let addCostOpen = (array) => {
@@ -265,6 +275,7 @@ let retreive = () => {
       let itemKey = childSnapshot.key;
       let taxStat = childSnapshot.val().tax;
       let orderUrl = childSnapshot.val().url;
+      let status = childSnapshot.val().complete;
 
       if (childSnapshot.val().complete === "open") {
         openCostArr.push(parseInt(cost));
@@ -283,8 +294,12 @@ let retreive = () => {
       ) {
         totalCost.push(parseInt(cost));
       }
+      if (status === "tax") {
+        taxPeriod.push(parseInt(cost))
+      }
 
       addCost(totalCost);
+      addCost2(taxPeriod, "totalTaxPeriodDisp")
 
       if (
         // (childSnapshot.val().tax === "Taxable" &&
