@@ -175,6 +175,15 @@ let closeBtn = (id) => {
   });
 };
 
+let taxBtn = (id) => {
+  $("#" + id + "t" + "").on("click", function () {
+    database.ref(id).update({
+      complete: "tax",
+    });
+    window.location.reload();
+  });
+};
+
 let batchOut = (array) => {
   let sum = 0;
   let taxPer = 0.56;
@@ -278,10 +287,10 @@ let retreive = () => {
       addCost(totalCost);
 
       if (
+        // (childSnapshot.val().tax === "Taxable" &&
+        //   childSnapshot.val().complete === "open") ||
         (childSnapshot.val().tax === "Taxable" &&
-          childSnapshot.val().complete === "open") ||
-        (childSnapshot.val().tax === "Taxable" &&
-          childSnapshot.val().complete === "complete")
+          childSnapshot.val().complete === "tax")
       ) {
         taxableArr.push(parseInt(cost));
       }
@@ -297,29 +306,6 @@ let retreive = () => {
               orderUrl +
               '">View</a>'
           ),
-          // $("<td>").html(
-          //   '<button key="' +
-          //     itemKey +
-          //     '" id="' +
-          //     itemKey +
-          //     '" class="btn btn-primary delete-btn">Complete</button>'
-          // ),
-          // $("<td>").html(
-          //   '<button key="' +
-          //     itemKey +
-          //     '" id="' +
-          //     itemKey +
-          //     "e" +
-          //     '" class="btn btn-primary delete-btn">Edit</button>'
-          // ),
-          // $("<td>").html(
-          //   '<button key="' +
-          //     orderDate +
-          //     '" id="' +
-          //     itemKey +
-          //     "d" +
-          //     '" class="btn btn-primary delete-btn">Delete</button>'
-          // ),
           $("<td>").html(
             '<div class="dropdown">' +
               "<button" +
@@ -362,6 +348,13 @@ let retreive = () => {
               "f" +
               '" class="btn btn-primary delete-btn">Close</button>' +
               "<li>" +
+              '<button key="' +
+              orderDate +
+              '" id="' +
+              itemKey +
+              "t" +
+              '" class="btn btn-primary delete-btn">Tax Period</button>' +
+              "<li>" +
               "</ul>" +
               "</div>"
           )
@@ -372,6 +365,7 @@ let retreive = () => {
         editBtn(itemKey, vendor, cost, orderDate, taxStat);
         deleteBtn(itemKey);
         closeBtn(itemKey);
+        taxBtn(itemKey)
       } else if (childSnapshot.val().complete == "complete") {
         let closedOrderInfo = $("<tr>").append(
           $("<td>").text(vendor),
@@ -384,32 +378,8 @@ let retreive = () => {
               orderUrl +
               '">View</a>'
           ),
-          // $("<td>").html(
-          // '<button key="' +
-          //   orderDate +
-          //   '" id="' +
-          //   itemKey +
-          //   '" class="btn btn-primary delete-btn">Open</button>'
-          // ),
-          // $("<td>").html(
-          //   '<button key="' +
-          //     orderDate +
-          //     '" id="' +
-          //     itemKey +
-          //     "f" +
-          //     '" class="btn btn-primary delete-btn">Close</button>'
-          // ),
-          // $("<td>").html(
-          //   '<button key="' +
-          //     orderDate +
-          //     '" id="' +
-          //     itemKey +
-          //     "d" +
-          //     '" class="btn btn-primary delete-btn">Delete</button>'
-          // )
           $("<td>").html(
             '<div class="dropdown">' +
-              // '<button class="btn> test </button>' +
               "<button" +
               'class="btn btn-primary dropdown-toggle"' +
               'type="button"' +
@@ -450,6 +420,14 @@ let retreive = () => {
               "f" +
               '" class="btn btn-primary delete-btn">Close</button>' +
               "<li>" +
+              "<li>" +
+              '<button key="' +
+              orderDate +
+              '" id="' +
+              itemKey +
+              "t" +
+              '" class="btn btn-primary delete-btn">Tax Period</button>' +
+              "<li>" +
               "</ul>" +
               "</div>"
           )
@@ -459,9 +437,10 @@ let retreive = () => {
         deleteBtn(itemKey);
         closeBtn(itemKey);
         openBtn(itemKey);
+        taxBtn(itemKey);
        } 
 
-       ///// Trial Start
+
 
        if (childSnapshot.val().complete == "closed") {
         let newOrderInfo = $("<tr>").append(
@@ -475,29 +454,6 @@ let retreive = () => {
               orderUrl +
               '">View</a>'
           ),
-          // $("<td>").html(
-          //   '<button key="' +
-          //     itemKey +
-          //     '" id="' +
-          //     itemKey +
-          //     '" class="btn btn-primary delete-btn">Complete</button>'
-          // ),
-          // $("<td>").html(
-          //   '<button key="' +
-          //     itemKey +
-          //     '" id="' +
-          //     itemKey +
-          //     "e" +
-          //     '" class="btn btn-primary delete-btn">Edit</button>'
-          // ),
-          // $("<td>").html(
-          //   '<button key="' +
-          //     orderDate +
-          //     '" id="' +
-          //     itemKey +
-          //     "d" +
-          //     '" class="btn btn-primary delete-btn">Delete</button>'
-          // ),
           $("<td>").html(
             '<div class="dropdown">' +
               "<button" +
@@ -540,101 +496,105 @@ let retreive = () => {
               "o" +
               '" class="btn btn-primary delete-btn">Open</button>' +
               "</li>" +
+              "<li>" +
+              '<button key="' +
+              orderDate +
+              '" id="' +
+              itemKey +
+              "t" +
+              '" class="btn btn-primary delete-btn">Tax Period</button>' +
+              "<li>" +
               "</ul>" +
               "</div>"
           )
         );
+
+        
 
         $("#closed-orders > tbody").append(newOrderInfo);
         completeBtn(itemKey);
         editBtn(itemKey, vendor, cost, orderDate, taxStat);
         deleteBtn(itemKey);
         openBtn(itemKey);
+        taxBtn(itemKey);
+      } 
+      if (childSnapshot.val().complete == "tax") {
+        let newOrderInfo = $("<tr>").append(
+          $("<td>").text(vendor),
+          $("<td>").text("$" + cost),
+          $("<td>").text(orderDate),
+          $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow("d")),
+          $("<td>").text(taxStat),
+          $("<td>").html(
+            '<a class="viewLink" target="_blank" href="' +
+              orderUrl +
+              '">View</a>'
+          ),
+          $("<td>").html(
+            '<div class="dropdown">' +
+              "<button" +
+              'class="btn btn-primary dropdown-toggle"' +
+              'type="button"' +
+              'data-toggle="dropdown">' +
+              "Action" +
+              '<span class="caret"></span>' +
+              "</button>" +
+              '<ul class="dropdown-menu">' +
+              "<li>" +
+              '<button key="' +
+              orderDate +
+              '" id="' +
+              itemKey +
+              "d" +
+              '" class="btn btn-primary delete-btn">Delete</button>' +
+              "</li>" +
+              "<li>" +
+              '<button key="' +
+              itemKey +
+              '" id="' +
+              itemKey +
+              "e" +
+              '" class="btn btn-primary delete-btn">Edit</button>' +
+              "</li>" +
+              "<li>" +
+              '<button key="' +
+              itemKey +
+              '" id="' +
+              itemKey +
+              "c" +
+              '" class="btn btn-primary delete-btn">Complete</button>' +
+              "</li>" +
+              "<li>" +
+              '<button key="' +
+              orderDate +
+              '" id="' +
+              itemKey +
+              "o" +
+              '" class="btn btn-primary delete-btn">Open</button>' +
+              "</li>" +
+              "<li>" +
+              '<button key="' +
+              orderDate +
+              '" id="' +
+              itemKey +
+              "t" +
+              '" class="btn btn-primary delete-btn">Tax Period</button>' +
+              "<li>" +
+              "</ul>" +
+              "</div>"
+          )
+        );
+
+        
+
+        $("#tax-period > tbody").append(newOrderInfo);
+        completeBtn(itemKey);
+        editBtn(itemKey, vendor, cost, orderDate, taxStat);
+        deleteBtn(itemKey);
+        openBtn(itemKey);
+        taxBtn(itemKey);
       } 
 
-       ///// Trial End
-
-
-     // else if (childSnapshot.val().complete == "closed") {
-      //   let closedOrderInfo = $("<tr>").append(
-      //     $("<td>").text(vendor),
-      //     $("<td>").text("$" + cost),
-      //     $("<td>").text(orderDate),
-      //     $("<td>").text(moment(orderDate, "MM/DD/YYYY").fromNow()),
-      //     $("<td>").text(taxStat),
-      //     $("<td>").html(
-      //       '<a class="viewLink" target="_blank" href="' +
-      //         orderUrl +
-      //         '">View</a>'
-      //     ),
-      //     // $("<td>").html(
-      //     //   '<button key="' +
-      //     //     orderDate +
-      //     //     '" id="' +
-      //     //     itemKey +
-      //     //     '" class="btn btn-primary delete-btn">Open</button>'
-      //     // ),
-      //     // $("<td>").html(
-      //     //   '<button key="' +
-      //     //     orderDate +
-      //     //     '" id="' +
-      //     //     itemKey +
-      //     //     "d" +
-      //     //     '" class="btn btn-primary delete-btn">Delete</button>'
-      //     // )
-      //     $("<td>").html(
-      //       '<div class="dropdown">' +
-      //         "<button" +
-      //         'class="btn btn-primary dropdown-toggle"' +
-      //         'type="button"' +
-      //         'data-toggle="dropdown">' +
-      //         "Action" +
-      //         '<span class="caret"></span>' +
-      //         "</button>" +
-      //         '<ul class="dropdown-menu">' +
-      //         "<li>" +
-      //         '<button key="' +
-      //         orderDate +
-      //         '" id="' +
-      //         itemKey +
-      //         "d" +
-      //         '" class="btn btn-primary delete-btn">Delete</button>' +
-      //         "</li>" +
-      //         "<li>" +
-      //         '<button key="' +
-      //         itemKey +
-      //         '" id="' +
-      //         itemKey +
-      //         "e" +
-      //         '" class="btn btn-primary delete-btn">Edit</button>' +
-      //         "</li>" +
-      //         "<li>" +
-      //         '<button key="' +
-      //         orderDate +
-      //         '" id="' +
-      //         itemKey +
-      //         '" class="btn btn-primary delete-btn">Open</button>' +
-      //         "</li>" +
-
-      //         "<li>" +
-      //         '<button key="' +
-      //         itemKey +
-      //         '" id="' +
-      //         itemKey +
-      //         '" class="btn btn-primary delete-btn">Complete</button>' +
-      //         "</li>" +
-      //         "</ul>" +
-      //         "</div>"
-      //     )
-      //   );
-      //   $("#closed-orders > tbody").append(closedOrderInfo);
-      //   editBtn(itemKey, vendor, cost, orderDate, taxStat);
-      //   deleteBtn(itemKey);
-      //   completeBtn(itemKey);
-      //   openBtn(itemKey);
-      // }
-
-      
       calcTax(taxableArr);
 
       if (taxableArr > 0) {
