@@ -131,7 +131,7 @@ let updateBtn = (id) => {
       vendor,
       cost,
       date,
-      complete: "open",
+      // complete,
       tax,
       url,
     });
