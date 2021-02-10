@@ -126,12 +126,19 @@ let updateBtn = (id) => {
     let cost = $("#eCost").val().trim();
     let date = $("#eDatepicker").val().trim();
     let tax = $("#eTaxOption").val().trim();
+    // $('#open-orders').show();
+    // $('#complete-orders').show();
+    // $('#tax-period').show();
+    // $('#closed-orders').show();
+    $('#openHide').show();
+    $('#completeHide').show();
+    $('#taxHide').show();
+    $('#closeHide').show();
 
     database.ref(id).update({
       vendor,
       cost,
       date,
-      // complete,
       tax,
       url,
     });
@@ -145,6 +152,14 @@ let editBtn = (id, curVendor, curCost, curOrderDate, curTaxStat) => {
     $("#eCost").val(curCost);
     $("#eDatepicker").val(curOrderDate);
     $("#eTaxOption").val(curTaxStat);
+    // $('#open-orders').hide();
+    // $('#complete-orders').hide();
+    // $('#tax-period').hide();
+    $('#openHide').hide();
+    $('#completeHide').hide();
+    $('#taxHide').hide();
+    $('#closeHide').hide();
+    
     // $('#sampleView').html('<iframe class="previewImg" src="' + url + '" alt="preview">')
     updateBtn(id);
     // $("#updateBtn").hide();
