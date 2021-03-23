@@ -203,6 +203,15 @@ let closeBtn = (id) => {
   });
 };
 
+let closeMany = (id) => {
+  $("#" + id + "f" + "").on("click", function () {
+    database.ref(id).update({
+      complete: "closed",
+    });
+    window.location.reload();
+  });
+};
+
 let taxBtn = (id) => {
   $("#" + id + "t" + "").on("click", function () {
     database.ref(id).update({
@@ -294,14 +303,25 @@ let handleFileSelect = (event) => {
 //   // for (var checkbox in checkAll)
 //   //   checkbox.checked = source.checked;
 // }
-
-// let selectOne = () => {
+//////****getElementByName will get all */
+// let selectOne = (id) => {
 //   checkAll = document.getElementsByName('openCheck');
 //   var status = $(this).is(':checked')
-//     console.log('SelectOne this.checked: ', this)
+//     console.log('SelectOne this: ', this)
+  
 //     console.log("$(this).is(':checked')", status)
 //     $('input[type="checkbox"]', $(this).parent('tr')).attr('checked', status);
 //   }
+
+let selectOne = (id) => {
+  checkOne = document.getElementsById(id);
+  var status = $(this).is(':checked')
+    console.log('checkOne: ', checkOne)
+    console.log('SelectOne this: ', this)
+    console.log("$(this).is(':checked')", status)
+    $('input[type="checkbox"]', $(this).parent('tr')).attr('checked', status);
+  }
+
 
 
 let retreive = () => {
@@ -353,16 +373,19 @@ let retreive = () => {
       }
       if (childSnapshot.val().complete == "open") {
         let newOrderInfo = $("<tr>").append(
-        //   $("<td>").html('<div name="openCheck" class="form-check checkBox"' +
-        //   '" id="' +
-        //   itemKey +
-        //   '"s"' +
-        //   '>' +
-        //  ' <input class="form-check-input" type="checkbox" onClick="selectOne()" value="" id="flexCheckDefault">' +
-        //   '<label class="form-check-label" for="flexCheckDefault">'+
-        //     // 'Default checkbox'+
-        //   '</label>' +
-        // '</div>'),
+          $("<td>").html('<div name="openCheck" class="form-check checkBox"' +
+          ' id="' +
+          itemKey +
+          's"' +
+          '>' +
+         ' <input class="form-check-input" type="checkbox" onClick="selectOne(' +
+         itemKey +
+         's' +
+          ')" value="" id="flexCheckDefault">' +
+          '<label class="form-check-label" for="flexCheckDefault">'+
+            // 'Default checkbox'+
+          '</label>' +
+        '</div>'),
           $("<td>").text(vendor),
           $("<td>").text("$" + cost),
           $("<td>").text(orderDate),
