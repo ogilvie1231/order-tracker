@@ -18,6 +18,8 @@ $("#eLoading").hide();
 $("#eIsLoaded").hide();
 $("#loading").hide();
 $("#isLoaded").hide();
+// $("#openSelect").hide();
+// $(".checkBox").hide();
 // $("#new-order-btn").hide();
 
 $("#new-order-btn").on("click", function (event) {
@@ -277,6 +279,30 @@ let handleFileSelect = (event) => {
     }
   );
 };
+////////******* For mass updating *******/
+// let selectAll = () => {
+//   checkAll = document.getElementsByName('openCheck');
+//   let elem
+//   for (let i = 0; i < checkAll.length; i++) {
+//     const elem = checkAll[i];
+//     var status = $(this).is(':checked');
+
+//     status = 'checked'
+//     console.log('Log status: ', status)
+//   }
+  
+//   // for (var checkbox in checkAll)
+//   //   checkbox.checked = source.checked;
+// }
+
+// let selectOne = () => {
+//   checkAll = document.getElementsByName('openCheck');
+//   var status = $(this).is(':checked')
+//     console.log('SelectOne this.checked: ', this)
+//     console.log("$(this).is(':checked')", status)
+//     $('input[type="checkbox"]', $(this).parent('tr')).attr('checked', status);
+//   }
+
 
 let retreive = () => {
   database
@@ -327,6 +353,16 @@ let retreive = () => {
       }
       if (childSnapshot.val().complete == "open") {
         let newOrderInfo = $("<tr>").append(
+        //   $("<td>").html('<div name="openCheck" class="form-check checkBox"' +
+        //   '" id="' +
+        //   itemKey +
+        //   '"s"' +
+        //   '>' +
+        //  ' <input class="form-check-input" type="checkbox" onClick="selectOne()" value="" id="flexCheckDefault">' +
+        //   '<label class="form-check-label" for="flexCheckDefault">'+
+        //     // 'Default checkbox'+
+        //   '</label>' +
+        // '</div>'),
           $("<td>").text(vendor),
           $("<td>").text("$" + cost),
           $("<td>").text(orderDate),
@@ -470,9 +506,6 @@ let retreive = () => {
         openBtn(itemKey);
         taxBtn(itemKey);
        } 
-
-
-
        if (childSnapshot.val().complete == "closed") {
         let newOrderInfo = $("<tr>").append(
           $("<td>").text(vendor),
@@ -623,7 +656,7 @@ let retreive = () => {
         editBtn(itemKey, vendor, cost, orderDate, taxStat);
         deleteBtn(itemKey);
         openBtn(itemKey);
-        taxBtn(itemKey);
+        closeBtn(itemKey);
       } 
 
       calcTax(taxableArr);
