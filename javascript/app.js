@@ -313,10 +313,10 @@ let handleFileSelect = (event) => {
 //     $('input[type="checkbox"]', $(this).parent('tr')).attr('checked', status);
 //   }
 
-let selectOne = (id) => {
-  checkOne = document.getElementsById(id);
+let selectOne = (item) => {
+  checkOne = document.getElementsById(item);
   var status = $(this).is(':checked')
-    console.log('checkOne: ', checkOne)
+    // console.log('checkOne: ', checkOne)
     console.log('SelectOne this: ', this)
     console.log("$(this).is(':checked')", status)
     $('input[type="checkbox"]', $(this).parent('tr')).attr('checked', status);
@@ -372,16 +372,17 @@ let retreive = () => {
         taxableArr.push(parseInt(cost));
       }
       if (childSnapshot.val().complete == "open") {
+        let getElem  = itemKey + 's'
         let newOrderInfo = $("<tr>").append(
           $("<td>").html('<div name="openCheck" class="form-check checkBox"' +
-          ' id="' +
+          '" id="' +
           itemKey +
-          's"' +
+          '"s"' +
           '>' +
          ' <input class="form-check-input" type="checkbox" onClick="selectOne(' +
-         itemKey +
-         's' +
-          ')" value="" id="flexCheckDefault">' +
+         getElem +
+        
+         ')" value="" id="flexCheckDefault">' +
           '<label class="form-check-label" for="flexCheckDefault">'+
             // 'Default checkbox'+
           '</label>' +
@@ -664,8 +665,8 @@ let retreive = () => {
               orderDate +
               '" id="' +
               itemKey +
-              "t" +
-              '" class="btn btn-primary delete-btn">Tax Period</button>' +
+              "f" +
+              '" class="btn btn-primary delete-btn">Close</button>' +
               "<li>" +
               "</ul>" +
               "</div>"
