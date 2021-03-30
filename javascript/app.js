@@ -128,27 +128,26 @@ let updateBtn = (id) => {
     let cost = $("#eCost").val().trim();
     let date = $("#eDatepicker").val().trim();
     let tax = $("#eTaxOption").val().trim();
-    $('#openHide').show();
-    $('#completeHide').show();
-    $('#taxHide').show();
-    $('#closeHide').show();
-if (url){
-    database.ref(id).update({
-      vendor,
-      cost,
-      date,
-      tax,
-      url,
-    });
-  }
-  else {
-    database.ref(id).update({
-      vendor,
-      cost,
-      date,
-      tax,
-    });
-  }
+    $("#openHide").show();
+    $("#completeHide").show();
+    $("#taxHide").show();
+    $("#closeHide").show();
+    if (url) {
+      database.ref(id).update({
+        vendor,
+        cost,
+        date,
+        tax,
+        url,
+      });
+    } else {
+      database.ref(id).update({
+        vendor,
+        cost,
+        date,
+        tax,
+      });
+    }
   });
 };
 
@@ -159,13 +158,12 @@ let editBtn = (id, curVendor, curCost, curOrderDate, curTaxStat) => {
     $("#eCost").val(curCost);
     $("#eDatepicker").val(curOrderDate);
     $("#eTaxOption").val(curTaxStat);
-    $('#openHide').hide();
-    $('#completeHide').hide();
-    $('#taxHide').hide();
-    $('#closeHide').hide();
-    
-    updateBtn(id);
+    $("#openHide").hide();
+    $("#completeHide").hide();
+    $("#taxHide").hide();
+    $("#closeHide").hide();
 
+    updateBtn(id);
   });
 };
 
@@ -199,15 +197,7 @@ let closeBtn = (id) => {
     database.ref(id).update({
       complete: "closed",
     });
-    window.location.reload();
-  });
-};
-
-let closeMany = (id) => {
-  $("#" + id + "f" + "").on("click", function () {
-    database.ref(id).update({
-      complete: "closed",
-    });
+    console.log('you did it')
     window.location.reload();
   });
 };
@@ -299,30 +289,44 @@ let handleFileSelect = (event) => {
 //     status = 'checked'
 //     console.log('Log status: ', status)
 //   }
-  
+
 //   // for (var checkbox in checkAll)
 //   //   checkbox.checked = source.checked;
 // }
-//////****getElementByName will get all */
-// let selectOne = (id) => {
+
+// let selectOne = () => {
 //   checkAll = document.getElementsByName('openCheck');
 //   var status = $(this).is(':checked')
-//     console.log('SelectOne this: ', this)
-  
+//     console.log('SelectOne this.checked: ', this)
 //     console.log("$(this).is(':checked')", status)
 //     $('input[type="checkbox"]', $(this).parent('tr')).attr('checked', status);
 //   }
 
-let selectOne = (item) => {
-  checkOne = document.getElementsById(item);
-  var status = $(this).is(':checked')
-    // console.log('checkOne: ', checkOne)
-    console.log('SelectOne this: ', this)
-    console.log("$(this).is(':checked')", status)
-    $('input[type="checkbox"]', $(this).parent('tr')).attr('checked', status);
+// let selectOne = () => {
+//   let work = this.id
+//   console.log('work: ', work)
+//   // checkAll = document.getElementsByValue();
+//   // var status = $(this).is(':checked')
+//   console.log("SelectOne this.checked: ", this);
+//   console.log("$(this).is(':checked')", status);
+//   // $('input[type="checkbox"]', $(this).parent('tr')).attr('checked', status);
+// };
+
+let selectAll = () => {
+
+
+  checkAll = document.getElementsByName("openCheck");
+  let idArr =[];
+  for (let i = 0; i < checkAll.length; i++) {
+    const elem = checkAll[i];
+    let id = elem.id;
+    idArr.push(id)
+    console.log("elem.id: ", id);
+
+    closeBtn(id)
   }
-
-
+  console.log('idArr: ', idArr)
+};
 
 let retreive = () => {
   database
@@ -357,36 +361,38 @@ let retreive = () => {
         totalCost.push(parseInt(cost));
       }
       if (status === "tax") {
-        taxPeriod.push(parseInt(cost))
+        taxPeriod.push(parseInt(cost));
       }
 
       addCost(totalCost);
-      addCost2(taxPeriod, "totalTaxPeriodDisp")
+      addCost2(taxPeriod, "totalTaxPeriodDisp");
 
       if (
         // (childSnapshot.val().tax === "Taxable" &&
         //   childSnapshot.val().complete === "open") ||
-        (childSnapshot.val().tax === "Taxable" &&
-          childSnapshot.val().complete === "tax")
+        childSnapshot.val().tax === "Taxable" &&
+        childSnapshot.val().complete === "tax"
       ) {
         taxableArr.push(parseInt(cost));
       }
       if (childSnapshot.val().complete == "open") {
-        let getElem  = itemKey + 's'
+        let newId = itemKey + "f";
         let newOrderInfo = $("<tr>").append(
-          $("<td>").html('<div name="openCheck" class="form-check checkBox"' +
-          '" id="' +
-          itemKey +
-          '"s"' +
-          '>' +
-         ' <input class="form-check-input" type="checkbox" onClick="selectOne(' +
-         getElem +
-        
-         ')" value="" id="flexCheckDefault">' +
-          '<label class="form-check-label" for="flexCheckDefault">'+
-            // 'Default checkbox'+
-          '</label>' +
-        '</div>'),
+          $("<td>").html(
+            '<div name="openCheck" value="' +
+              newId +
+              '" class="form-check checkBox"' +
+              '" id="' +
+              itemKey +
+ 
+              '">' +
+              ' <input class="form-check-input" id="' + newId + '" type="checkbox" onClick="selectOne(' +
+              ')" value="' + newId + '" id="flexCheckDefault">' +
+              '<label class="form-check-label" for="flexCheckDefault">' +
+              // 'Default checkbox'+
+              "</label>" +
+              "</div>"
+          ),
           $("<td>").text(vendor),
           $("<td>").text("$" + cost),
           $("<td>").text(orderDate),
@@ -456,7 +462,7 @@ let retreive = () => {
         editBtn(itemKey, vendor, cost, orderDate, taxStat);
         deleteBtn(itemKey);
         closeBtn(itemKey);
-        taxBtn(itemKey)
+        taxBtn(itemKey);
       } else if (childSnapshot.val().complete == "complete") {
         let closedOrderInfo = $("<tr>").append(
           $("<td>").text(vendor),
@@ -529,8 +535,8 @@ let retreive = () => {
         closeBtn(itemKey);
         openBtn(itemKey);
         taxBtn(itemKey);
-       } 
-       if (childSnapshot.val().complete == "closed") {
+      }
+      if (childSnapshot.val().complete == "closed") {
         let newOrderInfo = $("<tr>").append(
           $("<td>").text(vendor),
           $("<td>").text("$" + cost),
@@ -597,15 +603,13 @@ let retreive = () => {
           )
         );
 
-        
-
         $("#closed-orders > tbody").append(newOrderInfo);
         completeBtn(itemKey);
         editBtn(itemKey, vendor, cost, orderDate, taxStat);
         deleteBtn(itemKey);
         openBtn(itemKey);
         taxBtn(itemKey);
-      } 
+      }
       if (childSnapshot.val().complete == "tax") {
         let newOrderInfo = $("<tr>").append(
           $("<td>").text(vendor),
@@ -665,15 +669,13 @@ let retreive = () => {
               orderDate +
               '" id="' +
               itemKey +
-              "f" +
-              '" class="btn btn-primary delete-btn">Close</button>' +
+              "t" +
+              '" class="btn btn-primary delete-btn">Tax Period</button>' +
               "<li>" +
               "</ul>" +
               "</div>"
           )
         );
-
-        
 
         $("#tax-period > tbody").append(newOrderInfo);
         completeBtn(itemKey);
@@ -681,7 +683,7 @@ let retreive = () => {
         deleteBtn(itemKey);
         openBtn(itemKey);
         closeBtn(itemKey);
-      } 
+      }
 
       calcTax(taxableArr);
 
