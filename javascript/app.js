@@ -18,6 +18,8 @@ $("#eLoading").hide();
 $("#eIsLoaded").hide();
 $("#loading").hide();
 $("#isLoaded").hide();
+$("#closeAllButton").hide();
+$("#selectAllBox").hide();
 // $("#openSelect").hide();
 // $(".checkBox").hide();
 // $("#new-order-btn").hide();
@@ -202,6 +204,12 @@ let closeBtn = (id) => {
   });
 };
 
+let showBtn = () => {
+  $('#editAllBtn').hide();
+  $("#closeAllButton").show();
+  $("#selectAllBox").show();
+}
+
 let taxBtn = (id) => {
   $("#" + id + "t" + "").on("click", function () {
     database.ref(id).update({
@@ -302,19 +310,8 @@ let handleFileSelect = (event) => {
 //     $('input[type="checkbox"]', $(this).parent('tr')).attr('checked', status);
 //   }
 
-// let selectOne = () => {
-//   let work = this.id
-//   console.log('work: ', work)
-//   // checkAll = document.getElementsByValue();
-//   // var status = $(this).is(':checked')
-//   console.log("SelectOne this.checked: ", this);
-//   console.log("$(this).is(':checked')", status);
-//   // $('input[type="checkbox"]', $(this).parent('tr')).attr('checked', status);
-// };
 
 let selectAll = () => {
-
-
   checkAll = document.getElementsByName("openCheck");
   let idArr =[];
   for (let i = 0; i < checkAll.length; i++) {
@@ -322,10 +319,21 @@ let selectAll = () => {
     let id = elem.id;
     idArr.push(id)
     console.log("elem.id: ", id);
-
-    closeBtn(id)
+    // closeBtn(id)
   }
-  console.log('idArr: ', idArr)
+  $("#closeAllButton").on("click", function () {
+   
+    for (let j = 0; j < idArr.length; j++) {
+      const elem2 = idArr[j]
+       database.ref(elem2).update({
+      complete: "closed",
+    })
+      // console.log('elem2: ', elem2)
+    }
+    window.location.reload()
+
+  })
+  // console.log('idArr: ', idArr)
 };
 
 let retreive = () => {
@@ -368,31 +376,13 @@ let retreive = () => {
       addCost2(taxPeriod, "totalTaxPeriodDisp");
 
       if (
-        // (childSnapshot.val().tax === "Taxable" &&
-        //   childSnapshot.val().complete === "open") ||
         childSnapshot.val().tax === "Taxable" &&
         childSnapshot.val().complete === "tax"
       ) {
         taxableArr.push(parseInt(cost));
       }
       if (childSnapshot.val().complete == "open") {
-        let newId = itemKey + "f";
         let newOrderInfo = $("<tr>").append(
-          $("<td>").html(
-            '<div name="openCheck" value="' +
-              newId +
-              '" class="form-check checkBox"' +
-              '" id="' +
-              itemKey +
- 
-              '">' +
-              ' <input class="form-check-input" id="' + newId + '" type="checkbox" onClick="selectOne(' +
-              ')" value="' + newId + '" id="flexCheckDefault">' +
-              '<label class="form-check-label" for="flexCheckDefault">' +
-              // 'Default checkbox'+
-              "</label>" +
-              "</div>"
-          ),
           $("<td>").text(vendor),
           $("<td>").text("$" + cost),
           $("<td>").text(orderDate),
@@ -611,7 +601,23 @@ let retreive = () => {
         taxBtn(itemKey);
       }
       if (childSnapshot.val().complete == "tax") {
+        let newId = itemKey + "all";
         let newOrderInfo = $("<tr>").append(
+          // $("<td>").html(
+          //   '<div name="openCheck" value="' +
+          //     newId +
+          //     '" class="form-check checkBox"' +
+          //     '" id="' +
+          //     itemKey +
+ 
+          //     '">' +
+          //     ' <input class="form-check-input" id="' + newId + '" type="checkbox" onClick="selectOne(' +
+          //     ')" value="' + newId + '" id="flexCheckDefault">' +
+          //     '<label class="form-check-label" for="flexCheckDefault">' +
+          //     // 'Default checkbox'+
+          //     "</label>" +
+          //     "</div>"
+          // ),
           $("<td>").text(vendor),
           $("<td>").text("$" + cost),
           $("<td>").text(orderDate),
@@ -623,6 +629,16 @@ let retreive = () => {
               '">View</a>'
           ),
           $("<td>").html(
+            '<div name="openCheck" value="' +
+              newId +
+              '" class="form-check checkBox"' +
+              '" id="' +
+              itemKey +
+ 
+              '">' +
+
+              
+              "</div>"+
             '<div class="dropdown">' +
               "<button" +
               'class="btn btn-primary dropdown-toggle"' +
