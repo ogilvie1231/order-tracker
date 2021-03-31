@@ -20,6 +20,7 @@ $("#loading").hide();
 $("#isLoaded").hide();
 $("#closeAllButton").hide();
 $("#selectAllBox").hide();
+
 // $("#openSelect").hide();
 // $(".checkBox").hide();
 // $("#new-order-btn").hide();
@@ -39,9 +40,11 @@ $("#new-order-btn").on("click", function (event) {
     alert("Cost must be a number");
   } else if (date === "") {
     alert("Please enter a date");
-  } else if (url === "") {
-    alert("Wait for upload to complete");
-  } else {
+  } 
+  // else if (url === "") {
+  //   alert("Wait for upload to complete");
+  // }
+   else {
     let newOrder = {
       vendor,
       cost,
@@ -199,16 +202,16 @@ let closeBtn = (id) => {
     database.ref(id).update({
       complete: "closed",
     });
-    console.log('you did it')
+    console.log("you did it");
     window.location.reload();
   });
 };
 
 let showBtn = () => {
-  $('#editAllBtn').hide();
+  $("#editAllBtn").hide();
   $("#closeAllButton").show();
   $("#selectAllBox").show();
-}
+};
 
 let taxBtn = (id) => {
   $("#" + id + "t" + "").on("click", function () {
@@ -286,53 +289,37 @@ let handleFileSelect = (event) => {
     }
   );
 };
-////////******* For mass updating *******/
-// let selectAll = () => {
-//   checkAll = document.getElementsByName('openCheck');
-//   let elem
-//   for (let i = 0; i < checkAll.length; i++) {
-//     const elem = checkAll[i];
-//     var status = $(this).is(':checked');
 
-//     status = 'checked'
-//     console.log('Log status: ', status)
-//   }
+let selectOne = (id) => {
+  checkAll = document.getElementById('"#' + id + '"');
+  console.log('checkAll: ', checkAll)
+};
 
-//   // for (var checkbox in checkAll)
-//   //   checkbox.checked = source.checked;
+// let handleCheckbox = (event) => {
+//   selectedFile = event.target.files[0];
+//   console.log('event: ')
 // }
-
-// let selectOne = () => {
-//   checkAll = document.getElementsByName('openCheck');
-//   var status = $(this).is(':checked')
-//     console.log('SelectOne this.checked: ', this)
-//     console.log("$(this).is(':checked')", status)
-//     $('input[type="checkbox"]', $(this).parent('tr')).attr('checked', status);
-//   }
-
 
 let selectAll = () => {
   checkAll = document.getElementsByName("openCheck");
-  let idArr =[];
+  let idArr = [];
   for (let i = 0; i < checkAll.length; i++) {
     const elem = checkAll[i];
     let id = elem.id;
-    idArr.push(id)
+    idArr.push(id);
     console.log("elem.id: ", id);
     // closeBtn(id)
   }
   $("#closeAllButton").on("click", function () {
-   
     for (let j = 0; j < idArr.length; j++) {
-      const elem2 = idArr[j]
-       database.ref(elem2).update({
-      complete: "closed",
-    })
+      const elem2 = idArr[j];
+      database.ref(elem2).update({
+        complete: "closed",
+      });
       // console.log('elem2: ', elem2)
     }
-    window.location.reload()
-
-  })
+    window.location.reload();
+  });
   // console.log('idArr: ', idArr)
 };
 
@@ -602,22 +589,25 @@ let retreive = () => {
       }
       if (childSnapshot.val().complete == "tax") {
         let newId = itemKey + "all";
+
         let newOrderInfo = $("<tr>").append(
-          // $("<td>").html(
-          //   '<div name="openCheck" value="' +
-          //     newId +
-          //     '" class="form-check checkBox"' +
-          //     '" id="' +
-          //     itemKey +
- 
-          //     '">' +
-          //     ' <input class="form-check-input" id="' + newId + '" type="checkbox" onClick="selectOne(' +
-          //     ')" value="' + newId + '" id="flexCheckDefault">' +
-          //     '<label class="form-check-label" for="flexCheckDefault">' +
-          //     // 'Default checkbox'+
-          //     "</label>" +
-          //     "</div>"
-          // ),
+          $("<td>").html(
+            '<div class="checkbox" name="openCheck" value="' +
+              newId +
+              '" class="form-check checkBox"' +
+              '" id="' +
+              itemKey +
+              ' id="hideBox">' +
+              ' <input class="form-check-input" id="' + 
+              newId +
+              '" type="checkbox" onClick="selectOne(' + itemKey + ')" value="' +
+              newId +
+              '" id="flexCheckDefault">' +
+              '<label class="form-check-label" for="flexCheckDefault">' +
+              // 'Default checkbox'+
+              "</label>" +
+              "</div>"
+          ),
           $("<td>").text(vendor),
           $("<td>").text("$" + cost),
           $("<td>").text(orderDate),
@@ -634,12 +624,9 @@ let retreive = () => {
               '" class="form-check checkBox"' +
               '" id="' +
               itemKey +
- 
               '">' +
-
-              
-              "</div>"+
-            '<div class="dropdown">' +
+              "</div>" +
+              '<div class="dropdown">' +
               "<button" +
               'class="btn btn-primary dropdown-toggle"' +
               'type="button"' +
@@ -692,7 +679,7 @@ let retreive = () => {
               "</div>"
           )
         );
-
+        $("#hideBox").hide();
         $("#tax-period > tbody").append(newOrderInfo);
         completeBtn(itemKey);
         editBtn(itemKey, vendor, cost, orderDate, taxStat);
