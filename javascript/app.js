@@ -255,6 +255,7 @@ let handleFileSelect = (event) => {
           console.log("Upload is running");
           $("#eLoading").show();
           $("#loading").show();
+          $("#new-order-btn").hide();
           break;
       }
     },
@@ -284,7 +285,8 @@ let handleFileSelect = (event) => {
         $("#eLoading").hide();
         $("#eIsLoaded").show();
         $("#loading").hide();
-        $("#isLoaded").show();
+        // $("#isLoaded").show();
+        $("#new-order-btn").show();
       });
     }
   );
